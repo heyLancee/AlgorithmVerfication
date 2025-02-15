@@ -6,6 +6,7 @@
 ".\attitudestabilization\gpio.o"
 ".\attitudestabilization\freertos.o"
 ".\attitudestabilization\crc.o"
+".\attitudestabilization\dma.o"
 ".\attitudestabilization\fsmc.o"
 ".\attitudestabilization\usart.o"
 ".\attitudestabilization\stm32f4xx_it.o"
