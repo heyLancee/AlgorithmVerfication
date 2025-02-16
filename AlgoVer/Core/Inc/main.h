@@ -70,7 +70,8 @@ void Error_Handler(void);
 /* Private defines -----------------------------------------------------------*/
 
 /* USER CODE BEGIN Private defines */
-extern QueueHandle_t dataTransQueue;
+extern QueueHandle_t dataQueue;
+extern QueueHandle_t dataLenQueue;
 
 /* USER CODE END Private defines */
 

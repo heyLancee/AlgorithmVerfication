@@ -27,7 +27,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "main.h"
+#include "base.h"
 
 /* USER CODE END Includes */
 
@@ -49,7 +49,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-unsigned char rx_buf[1];
+unsigned char rx_buf[MAX_RECV_BUFFER];
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -106,9 +106,10 @@ int main(void)
   MX_USART1_UART_Init();
   MX_FSMC_Init();
   /* USER CODE BEGIN 2 */
-
-  // HAL_UART_Receive_IT(&huart1, (uint8_t *)rx_buf, 1);
-  HAL_UART_Receive_DMA(&huart1, (uint8_t *)rx_buf, 1);
+  // 启用IDLE中断
+  __HAL_UART_ENABLE_IT(&huart1, UART_IT_IDLE);
+  // 启动DMA接收
+  HAL_UART_Receive_DMA(&huart1, (uint8_t *)rx_buf, MAX_RECV_BUFFER);
   HAL_Delay(100);
   LCD_Init();
 
@@ -117,7 +118,7 @@ int main(void)
   LCD_Clear(WHITE);
   LCD_ShowString(20, 40, 210, 24, 24, (u8 *)"Evaluation");
 
-  printf("Loop Start");
+  printf("Loop Start\r\n");
   /* USER CODE END 2 */
 
   /* Call init function for freertos objects (in freertos.c) */
@@ -182,30 +183,32 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
+void HAL_UART_IdleCallback(UART_HandleTypeDef *huart) {
+	if (huart->Instance == USART1) {
+    printf("IDLE\r\n");
+		// 清除IDLE中断标志
+    __HAL_UART_CLEAR_IDLEFLAG(&huart1);
+		// 停止 DMA 传输
+		HAL_UART_DMAStop(&huart1);
+		
+		// 计算接收到的数据长度
+		uint16_t recv_len = MAX_RECV_BUFFER - __HAL_DMA_GET_COUNTER(huart1.hdmarx);
 
-void HAL_UART_RxCpltCallback(UART_HandleTypeDef *huart) {
-  BaseType_t pxHigherPriorityTaskWoken = pdFALSE;
-  if (huart->Instance == USART1) {
-    // 中断服务函数快进快出，发送到队列后在别的任务中处�?????
-    // 不要在中断函数里打印，会影响传输
-    xQueueSendFromISR(dataTransQueue, &rx_buf[0], &pxHigherPriorityTaskWoken);
-
-    // 当DMA模式位circular时，可不用再次开启DMA
-    // HAL_UART_Receive_DMA(&huart1, (uint8_t *)rx_buf, 1);
-
-    /*
-      �????般来说，高优先级的中断任务会抢占低优先级的中断任务，但是在FreeRTOS中却不会在中断任务中进行任务切换�????
-      OS将切换权限交给程序员，当发生高优先级的（中断）任务时（中断优先级要高于任意一个调度任务），可执行下句进行切换
-    */
-    portYIELD_FROM_ISR(pxHigherPriorityTaskWoken);
-  }
+    // 队列塞入数据长度
+    BaseType_t pxHigherPriorityTaskWoken = pdFALSE;
+    xQueueSendFromISR(dataLenQueue, &recv_len, &pxHigherPriorityTaskWoken);
+		
+		// 处理接收到的数据
+		for (int i = 0; i < recv_len; i++) {
+				xQueueSendFromISR(dataQueue, &rx_buf[i], &pxHigherPriorityTaskWoken);
+		}
+		
+		// 重新启动 DMA 接收
+		HAL_UART_Receive_DMA(&huart1, (uint8_t *)rx_buf, MAX_RECV_BUFFER);
+		
+		portYIELD_FROM_ISR(pxHigherPriorityTaskWoken);
+	}
 }
-
-// void PreSleepProcessing(uint32_t ulExpectedIdleTime) {
-//   // configEXPECTED_IDLE_TIME_BEFORE_SLEEP
-//   // 系统进入低功耗前运行此函�??
-//   printf("expected time: %ld \r\n", ulExpectedIdleTime);
-// }
 
 /* USER CODE END 4 */
 
