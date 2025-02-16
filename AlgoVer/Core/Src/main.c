@@ -24,6 +24,7 @@
 #include "usart.h"
 #include "gpio.h"
 #include "fsmc.h"
+#include "app_x-cube-ai.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -105,6 +106,7 @@ int main(void)
   MX_CRC_Init();
   MX_USART1_UART_Init();
   MX_FSMC_Init();
+  MX_X_CUBE_AI_Init();
   /* USER CODE BEGIN 2 */
   // 启用IDLE中断
   __HAL_UART_ENABLE_IT(&huart1, UART_IT_IDLE);

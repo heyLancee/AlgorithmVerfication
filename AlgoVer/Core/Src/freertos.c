@@ -53,7 +53,7 @@ QueueHandle_t dataLenQueue = NULL;
 // 事件组可以代替信号量的工作，完成任务与任务，中断与任务的通信
 EventGroupHandle_t EventGroup;
 
-unsigned char recvBuffer[MAX_RECV_BUFFER] = {0};  // 接收缓冲区
+unsigned char recvBuffer[MAX_RECV_BUFFER] = {0};  // 接收缓冲�?
 
 /* USER CODE END Variables */
 osThreadId defaultTaskHandle;
@@ -152,7 +152,7 @@ void MX_FREERTOS_Init(void) {
   LCDConrtolHandle = osThreadCreate(osThread(LCDConrtol), NULL);
 
   /* definition and creation of DataProcess */
-  osThreadDef(DataProcess, StartDataProcess, osPriorityIdle, 0, 128);
+  osThreadDef(DataProcess, StartDataProcess, osPriorityHigh, 0, 128);
   DataProcessHandle = osThreadCreate(osThread(DataProcess), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
@@ -209,7 +209,7 @@ void StartDataRecv(void const * argument)
       continue;
     }
 
-    // 接受dataLen长度的数据
+    // 接受dataLen长度的数�?
     for (int i = 0; i < dataLen; i++) {
       if (pdTRUE!= xQueueReceive(dataQueue, &recvBuffer[i], portMAX_DELAY)) {
         printf("Queue receive failed\r\n");
