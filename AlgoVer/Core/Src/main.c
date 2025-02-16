@@ -118,7 +118,7 @@ int main(void)
   LCD_Clear(WHITE);
   LCD_ShowString(20, 40, 210, 24, 24, (u8 *)"Evaluation");
 
-  printf("Loop Start");
+  printf("Loop Start\r\n");
   /* USER CODE END 2 */
 
   /* Call init function for freertos objects (in freertos.c) */
@@ -185,6 +185,7 @@ void SystemClock_Config(void)
 /* USER CODE BEGIN 4 */
 void HAL_UART_IdleCallback(UART_HandleTypeDef *huart) {
 	if (huart->Instance == USART1) {
+    printf("IDLE\r\n");
 		// 清除IDLE中断标志
     __HAL_UART_CLEAR_IDLEFLAG(&huart1);
 		// 停止 DMA 传输
@@ -192,11 +193,14 @@ void HAL_UART_IdleCallback(UART_HandleTypeDef *huart) {
 		
 		// 计算接收到的数据长度
 		uint16_t recv_len = MAX_RECV_BUFFER - __HAL_DMA_GET_COUNTER(huart1.hdmarx);
+
+    // 队列塞入数据长度
+    BaseType_t pxHigherPriorityTaskWoken = pdFALSE;
+    xQueueSendFromISR(dataLenQueue, &recv_len, &pxHigherPriorityTaskWoken);
 		
 		// 处理接收到的数据
-		BaseType_t pxHigherPriorityTaskWoken = pdFALSE;
 		for (int i = 0; i < recv_len; i++) {
-				xQueueSendFromISR(dataTransQueue, &rx_buf[i], &pxHigherPriorityTaskWoken);
+				xQueueSendFromISR(dataQueue, &rx_buf[i], &pxHigherPriorityTaskWoken);
 		}
 		
 		// 重新启动 DMA 接收

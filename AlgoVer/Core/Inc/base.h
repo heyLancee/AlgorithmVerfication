@@ -7,8 +7,9 @@
 #include <stdint.h>
 #include "task.h"
 
-#define MAX_QUEUE 100          // 队列最大长度
-#define MAX_RECV_BUFFER 1024  // 接收缓冲区大小
+#define QUEUE_MAX_SIZE 100          // 队列最大长度
+#define LEN_QUEUE_MAX_SIZE 10       // 队列最大长度
+#define MAX_RECV_BUFFER 1024        // 接收缓冲区大小
 
 
 typedef struct {

@@ -47,13 +47,13 @@
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN Variables */
-QueueHandle_t dataTransQueue = NULL;
+QueueHandle_t dataQueue = NULL;
+QueueHandle_t dataLenQueue = NULL;
 
 // 事件组可以代替信号量的工作，完成任务与任务，中断与任务的通信
 EventGroupHandle_t EventGroup;
 
-unsigned char recvBuffer[MAX_RECV_BUFFER] = {0};  // 接收缓冲�?
-uint16_t recvIndex = 0;  // 接收索引
+unsigned char recvBuffer[MAX_RECV_BUFFER] = {0};  // 接收缓冲区
 
 /* USER CODE END Variables */
 osThreadId defaultTaskHandle;
@@ -67,7 +67,7 @@ osThreadId DataProcessHandle;
 /* USER CODE END FunctionPrototypes */
 
 void StartDefaultTask(void const * argument);
-void StartDataTrans(void const * argument);
+void StartDataRecv(void const * argument);
 void StartLCDCTL(void const * argument);
 void StartDataProcess(void const * argument);
 
@@ -134,7 +134,8 @@ void MX_FREERTOS_Init(void) {
 
   /* USER CODE BEGIN RTOS_QUEUES */
   /* add queues, ... */
-  dataTransQueue = xQueueCreate(MAX_QUEUE, sizeof(unsigned char));
+  dataQueue = xQueueCreate(QUEUE_MAX_SIZE, sizeof(unsigned char));
+  dataLenQueue = xQueueCreate(LEN_QUEUE_MAX_SIZE, sizeof(uint16_t));
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
@@ -143,7 +144,7 @@ void MX_FREERTOS_Init(void) {
   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
   /* definition and creation of DataRecv */
-  osThreadDef(DataRecv, StartDataTrans, osPriorityHigh, 0, 128);
+  osThreadDef(DataRecv, StartDataRecv, osPriorityHigh, 0, 128);
   DataRecvHandle = osThreadCreate(osThread(DataRecv), NULL);
 
   /* definition and creation of LCDConrtol */
@@ -179,96 +180,68 @@ void StartDefaultTask(void const * argument)
   /* USER CODE END StartDefaultTask */
 }
 
-/* USER CODE BEGIN Header_StartDataTrans */
+/* USER CODE BEGIN Header_StartDataRecv */
 /**
 * @brief Function implementing the DataRecv thread.
 * @param argument: Not used
 * @retval None
 */
-/* USER CODE END Header_StartDataTrans */
-void StartDataTrans(void const * argument)
+/* USER CODE END Header_StartDataRecv */
+void StartDataRecv(void const * argument)
 {
-  /* USER CODE BEGIN StartDataTrans */
+  /* USER CODE BEGIN StartDataRecv */
+  printf("Data recv task created \r\n");
   package_manager_init("SSSSSSSS", "EEEEEEEE");
 
-  unsigned char recvCharTmp;
   CommuDataType dataType;
-  
-  const char* headerStr = g_package_manager.header;
-  const char* tailStr = g_package_manager.tail;
-  const int headerLen = strlen(headerStr);
-  const int tailLen = strlen(tailStr);
-  
-  bool headerMatched = false;
-  int matchIndex = 0;
-  int tailCount = 0;
-  
-  printf("Data recv task created \r\n");
+  uint16_t dataLen = 0;
+
   /* Infinite loop */
   while (1) {
-    if (pdTRUE != xQueueReceive(dataTransQueue, &recvCharTmp, portMAX_DELAY)) {
+    if (pdTRUE!= xQueueReceive(dataLenQueue, &dataLen, portMAX_DELAY)) {
       continue;
     }
 		
-    if (recvIndex >= MAX_RECV_BUFFER - 2) {
-      printf("Buffer overflow, resetting\r\n");
-      recvIndex = 0;
-      headerMatched = false;
-      matchIndex = 0;
-      tailCount = 0;
+    if (dataLen >= MAX_RECV_BUFFER - 2) {
+      printf("Queue len is too long, resetting\r\n");
+      dataLen = 0;
       memset(recvBuffer, 0, MAX_RECV_BUFFER);
       continue;
     }
 
-    if (!headerMatched) {
-      if (recvCharTmp == headerStr[matchIndex]) {
-        matchIndex++;
-        if (matchIndex == headerLen) {
-          headerMatched = true;
-          matchIndex = 0;
+    // 接受dataLen长度的数据
+    for (int i = 0; i < dataLen; i++) {
+      if (pdTRUE!= xQueueReceive(dataQueue, &recvBuffer[i], portMAX_DELAY)) {
+        printf("Queue receive failed\r\n");
+        break;
         }
-      } else {
-        matchIndex = (recvCharTmp == headerStr[0]) ? 1 : 0;
       }
-      recvBuffer[recvIndex++] = recvCharTmp;
+    
+    char* data = unpackage_data((char*)recvBuffer, &dataType);
+    if (data == NULL) {
+      printf("Unpackage failed\r\n");
       continue;
     }
 		
-    recvBuffer[recvIndex++] = recvCharTmp;
-    recvBuffer[recvIndex] = '\0';
-    
-    if (recvCharTmp == tailStr[tailCount]) {
-      tailCount++;
-      if (tailCount == tailLen) {
-        char* data = unpackage_data((char*)recvBuffer, &dataType);
-        if (data != NULL) {
-          switch (dataType) {
-            case telemetryType: {
-              telemetryStruct* telemetry = (telemetryStruct*)data;
-              
-              xTaskNotify(DataProcessHandle, (uint32_t)telemetry, eSetValueWithOverwrite);
-              break;
-            }
-            default:
-              printf("Unknown data type: %d\r\n", dataType);
-              free(data);  
-              break;
-          }
-        }
+    switch (dataType) {
+      case telemetryType: {
+        telemetryStruct* telemetry = (telemetryStruct*)data;
         
-        recvIndex = 0;
-        headerMatched = false;
-        matchIndex = 0;
-        tailCount = 0;
-        memset(recvBuffer, 0, MAX_RECV_BUFFER);
+        xTaskNotify(DataProcessHandle, (uint32_t)telemetry, eSetValueWithOverwrite);
+        break;
       }
-    } else {
-      tailCount = (recvCharTmp == tailStr[0]) ? 1 : 0;
+      default:
+        printf("Unknown data type: %d\r\n", dataType);
+        free(data);  
+        break;
     }
+        
+    dataLen = 0;
+    memset(recvBuffer, 0, MAX_RECV_BUFFER);
   }
 	
   package_manager_cleanup();
-  /* USER CODE END StartDataTrans */
+  /* USER CODE END StartDataRecv */
 }
 
 /* USER CODE BEGIN Header_StartLCDCTL */
