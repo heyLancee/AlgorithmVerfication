@@ -26,6 +26,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "base.h"
+#include "ai.h"
 #include <limits.h>
 
 /* USER CODE END Includes */
@@ -53,7 +54,7 @@ QueueHandle_t dataLenQueue = NULL;
 // 事件组可以代替信号量的工作，完成任务与任务，中断与任务的通信
 EventGroupHandle_t EventGroup;
 
-unsigned char recvBuffer[MAX_RECV_BUFFER] = {0};  // 接收缓冲�?
+unsigned char recvBuffer[MAX_RECV_BUFFER] = {0};  // 接收缓冲�?
 
 /* USER CODE END Variables */
 osThreadId defaultTaskHandle;
@@ -209,13 +210,13 @@ void StartDataRecv(void const * argument)
       continue;
     }
 
-    // 接受dataLen长度的数�?
+    // 接受dataLen长度的数据
     for (int i = 0; i < dataLen; i++) {
       if (pdTRUE!= xQueueReceive(dataQueue, &recvBuffer[i], portMAX_DELAY)) {
         printf("Queue receive failed\r\n");
         break;
-        }
       }
+    }
     
     char* data = unpackage_data((char*)recvBuffer, &dataType);
     if (data == NULL) {
@@ -232,12 +233,12 @@ void StartDataRecv(void const * argument)
       }
       default:
         printf("Unknown data type: %d\r\n", dataType);
-        free(data);  
         break;
     }
         
     dataLen = 0;
     memset(recvBuffer, 0, MAX_RECV_BUFFER);
+    release_buffer(&data);
   }
 	
   package_manager_cleanup();
@@ -294,14 +295,36 @@ void StartDataProcess(void const * argument)
   while(1) {
     if (xTaskNotifyWait(0, ULONG_MAX, &notificationValue, portMAX_DELAY) == pdTRUE) {
       pTelemetry = (telemetryStruct*)notificationValue;
-      
-      if (pTelemetry != NULL) {
-        // TODO
-        
-        xEventGroupSetBits(EventGroup, 0x01);
-        
-        vPortFree(pTelemetry);
+      if (pTelemetry == NULL) {
+        printf("E: Failed to get telemetry data\r\n");
+        continue;
       }
+
+      AI_IOBuffer* buffer = AI_PrepareIO(pTelemetry);
+      if (buffer == NULL) {
+        printf("E: Failed to prepare IO buffers\r\n");
+        continue;
+      }
+      
+      AI_Run(buffer->inputs, buffer->outputs);
+      // TODO: 处理输出结果
+      pTelemetry->torqueX = 1;
+      pTelemetry->torqueY = 2;
+      pTelemetry->torqueZ = 3;
+      
+      // 通过串口DMA发走
+      char* data = package_data(pTelemetry, telemetryType); 
+      if (data == NULL) {
+        printf("E: Failed to package data\r\n");
+        continue;
+      }
+      
+      HAL_UART_Transmit_DMA(&huart1, (uint8_t*)data, strlen(data));
+      
+      AI_FreeIO(buffer);
+      xEventGroupSetBits(EventGroup, 0x01);
+      
+      release_buffer(&pTelemetry);
     }
   }
   /* USER CODE END StartDataProcess */
@@ -309,5 +332,6 @@ void StartDataProcess(void const * argument)
 
 /* Private application code --------------------------------------------------*/
 /* USER CODE BEGIN Application */
+
 
 /* USER CODE END Application */

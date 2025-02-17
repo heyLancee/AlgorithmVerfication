@@ -1,0 +1,8 @@
+{
+    "files.associations": {
+        "fsmc.h": "c",
+        "ai_platform_interface.h": "c",
+        "network_data.h": "c",
+        "network.h": "c"
+    }
+}
