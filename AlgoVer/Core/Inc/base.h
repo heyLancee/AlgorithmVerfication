@@ -9,7 +9,9 @@
 
 #define QUEUE_MAX_SIZE 100          // 队列最大长度
 #define LEN_QUEUE_MAX_SIZE 10       // 队列最大长度
-#define MAX_RECV_BUFFER 1024        // 接收缓冲区大小
+#define MAX_RECV_BUFFER 256        // 接收缓冲区大小
+#define PACKAGE_BUFFER_SIZE 256
+#define PACKAGE_BUFFER_COUNT 2  // 缓冲区池大小
 
 
 typedef struct {
@@ -52,6 +54,15 @@ typedef struct {
 
 // 全局单例
 static PackageManager g_package_manager = {NULL, NULL};
+
+// 缓冲区池结构
+typedef struct {
+    char buffers[PACKAGE_BUFFER_COUNT][PACKAGE_BUFFER_SIZE];
+    bool used[PACKAGE_BUFFER_COUNT];
+} BufferPool;
+
+// 全局缓冲区池
+static BufferPool g_buffer_pool = {{{0}}, {false}};
 
 static inline char* my_strdup(const char* s) {
     size_t len = strlen(s) + 1;
@@ -105,7 +116,32 @@ static inline bool validate_package(const char* package, CommuDataType* dataType
     return true;
 }
 
-// 打包数据
+// 从缓冲区池获取可用缓冲区
+static inline char* get_buffer(void) {
+    for(int i = 0; i < PACKAGE_BUFFER_COUNT; i++) {
+        if(!g_buffer_pool.used[i]) {
+            g_buffer_pool.used[i] = true;
+            return g_buffer_pool.buffers[i];
+        }
+    }
+    return NULL;  // 所有缓冲区都在使用中
+}
+
+// 释放缓冲区回池
+static inline void release_buffer(char** buffer) {
+    if (buffer == NULL || *buffer == NULL) {
+        return;
+    }
+    for(int i = 0; i < PACKAGE_BUFFER_COUNT; i++) {
+        if(g_buffer_pool.buffers[i] == *buffer) {
+            g_buffer_pool.used[i] = false;
+            *buffer = NULL;
+            return;
+        }
+    }
+}
+
+// 修改后的打包函数
 static inline char* package_data(const char* data, CommuDataType identifier) {
     if (!g_package_manager.header || !g_package_manager.tail) {
         return NULL;
@@ -114,9 +150,15 @@ static inline char* package_data(const char* data, CommuDataType identifier) {
     size_t header_len = strlen(g_package_manager.header);
     size_t data_len = strlen(data);
     size_t tail_len = strlen(g_package_manager.tail);
+    size_t total_len = header_len + 1 + data_len + tail_len + 1;
     
-    // 分配内存：帧头 + 标识符(1字节) + 数据 + 帧尾 + 结束符
-    char* package = (char*)malloc(header_len + 1 + data_len + tail_len + 1);
+    // 检查总长度是否超出缓冲区
+    if(total_len > PACKAGE_BUFFER_SIZE) {
+        return NULL;
+    }
+    
+    // 从池中获取缓冲区
+    char* package = get_buffer();
     if (!package) {
         return NULL;
     }
@@ -130,7 +172,7 @@ static inline char* package_data(const char* data, CommuDataType identifier) {
     return package;
 }
 
-// 解包数据
+// 修改后的解包函数
 static inline char* unpackage_data(const char* package, CommuDataType* dataType) {
     if (!validate_package(package, dataType)) {
         return NULL;
@@ -139,16 +181,20 @@ static inline char* unpackage_data(const char* package, CommuDataType* dataType)
     size_t header_len = strlen(g_package_manager.header);
     size_t package_len = strlen(package);
     size_t tail_len = strlen(g_package_manager.tail);
-    
-    // 计算数据部分的长度
     size_t data_len = package_len - header_len - 1 - tail_len;
     
-    // 分配内存并复制数据部分
-    char* data = (char*)pvPortMalloc(data_len + 1);
+    // 检查数据长度是否合法
+    if(data_len + 1 > PACKAGE_BUFFER_SIZE) {
+        return NULL;
+    }
+    
+    // 从池中获取缓冲区
+    char* data = get_buffer();
     if (!data) {
         return NULL;
     }
     
+    // 复制数据部分
     strncpy(data, package + header_len + 1, data_len);
     data[data_len] = '\0';
     
