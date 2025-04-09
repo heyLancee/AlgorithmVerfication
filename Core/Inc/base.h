@@ -6,13 +6,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <math.h>
-#include "task.h"
-
-#define QUEUE_MAX_SIZE 100          // 队列最大长度
-#define LEN_QUEUE_MAX_SIZE 10       // 队列最大长度
-#define MAX_RECV_BUFFER 256        // 接收缓冲区大小
-#define PACKAGE_BUFFER_SIZE 256
-#define PACKAGE_BUFFER_COUNT 2  // 缓冲区池大小
+#include <stdio.h>
 
 // 定义枚举类型
 typedef enum {
@@ -96,12 +90,13 @@ typedef struct {
 } PackageManager;
 
 // 函数声明
+size_t calculate_package_length(const PackageManager *pm, CommuDataType commu_type, FaultType fault_type);
 void TelemetryStruct_to_byte_array(const TelemetryStruct* obj, uint8_t* output);
 void TelemetryStruct_from_byte_array(TelemetryStruct* obj, const uint8_t* data);
 void FaultParams_to_byte_array(const FaultParams* obj, uint8_t* output);
 void FaultParams_from_byte_array(FaultParams* obj, const uint8_t* data);
 void PackageManager_init(PackageManager* pm, const char* header, const char* tail);
-void PackageManager_package(const PackageManager* pm, const void* data, CommuDataType commu_type, uint8_t* output, uint16_t* output_len);
+void PackageManager_package(const PackageManager* pm, const void* data, CommuDataType commu_type, uint8_t* output);
 int PackageManager_unpackage(const PackageManager* pm, const uint8_t* package, uint16_t package_len, void** output, CommuDataType* output_type);
 
 // 遥测结构序列化
@@ -167,7 +162,7 @@ void TelemetryStruct_from_byte_array(TelemetryStruct* obj, const uint8_t* data) 
 // 获取故障类型对应的参数数量
 static uint8_t get_fault_param_count(FaultType fault_type) {
     switch(fault_type) {
-        case NO_FAULT: return 1;
+        case NO_FAULT: return 0;
         case GYRO_INTERMITTENT_FAULT: return 1;
         case GYRO_SLOW_FAULT: return 2;
         case GYRO_MULTI_FAULT: return 1;
@@ -176,6 +171,41 @@ static uint8_t get_fault_param_count(FaultType fault_type) {
         case FLYWHEEL_COMPREHENSIVE: return 2;
         default: return 0;
     }
+}
+
+// 获取遥测数据结构体编码后长度
+size_t get_telemetry_encoded_length(void) {
+    return sizeof(TelemetryStruct); // n个double = n*8字节
+}
+
+// 获取故障参数结构体编码后长度
+size_t get_faultparams_encoded_length(const FaultType fault_type) {
+    // 固定部分：2个double(故障开始和结束时间) + 2个int(类型和组件ID) = 16+8 = 24字节
+    // 可变部分：参数数组
+    return 24 + get_fault_param_count(fault_type) * sizeof(double);
+}
+
+// 获取包管理器编码后长度
+size_t calculate_package_length(const PackageManager* pm, CommuDataType commu_type, FaultType fault_type) {
+    if (pm == NULL) return 0;
+
+    size_t data_len = 0;
+    
+    // 计算数据部分长度
+    switch (commu_type) {
+        case TELEMETRY:
+            data_len = get_telemetry_encoded_length();
+            break;
+        case FAULT_PARA: {
+            data_len = get_faultparams_encoded_length(fault_type);
+            break;
+        }
+        default:
+            return 0; // 无效数据类型
+    }
+
+    // 总长度 = 包头 + 类型(4字节) + 数据 + 包尾
+    return pm->header_len + sizeof(uint32_t) + data_len + pm->tail_len;
 }
 
 // 故障参数结构序列化
@@ -275,7 +305,14 @@ void PackageManager_init(PackageManager* pm, const char* header, const char* tai
 }
 
 // 封装数据包
-void PackageManager_package(const PackageManager* pm, const void* data, CommuDataType commu_type, uint8_t* output, uint16_t* output_len) {
+void PackageManager_package(const PackageManager* pm, const void* data, CommuDataType commu_type, uint8_t* output) {
+    /*
+        param:
+            pm: 包管理器 [PackageManager]
+            data: 要发送的数据 [TelemetryStruct, FaultParams]
+            commu_type: 数据类型 [CommuDataType]
+            output: 输出的栈内存数据包，需要在外部申请好栈空间 [uint8_t*]
+    */
     uint16_t pos = 0;
     
     // 添加包头
@@ -292,7 +329,7 @@ void PackageManager_package(const PackageManager* pm, const void* data, CommuDat
         data_len = sizeof(TelemetryStruct);
         TelemetryStruct_to_byte_array((const TelemetryStruct*)data, output + pos);
     } else if (commu_type == FAULT_PARA) {
-        data_len = 24 + get_fault_param_count(((const FaultParams*)data)->fault_type) * sizeof(double));
+        data_len = 24 + get_fault_param_count(((const FaultParams*)data)->fault_type) * sizeof(double);
         FaultParams_to_byte_array((const FaultParams*)data, output + pos);
     }
     pos += data_len;
@@ -300,8 +337,6 @@ void PackageManager_package(const PackageManager* pm, const void* data, CommuDat
     // 添加包尾
     memcpy(output + pos, pm->tail, pm->tail_len);
     pos += pm->tail_len;
-    
-    *output_len = pos;
 }
 
 // 解包数据包
@@ -339,59 +374,6 @@ int PackageManager_unpackage(const PackageManager* pm, const uint8_t* package, u
     }
     
     return 0; // 未知类型
-}
-
-// 示例用法
-int main() {
-    PackageManager pm;
-    PackageManager_init(&pm, "SSSSSSSS", "EEEEEEEE");
-    
-    // 测试遥测数据
-    TelemetryStruct telemetry_data;
-    memset(&telemetry_data, 0, sizeof(TelemetryStruct));
-    telemetry_data.timeStep = 1.0;
-    telemetry_data.wx = 0.5;
-    telemetry_data.wy = 0.6;
-    telemetry_data.wz = 0.7;
-    telemetry_data.zAngle = 45.0;
-    
-    uint8_t telemetry_package[1024];
-    uint16_t telemetry_package_len;
-    PackageManager_package(&pm, &telemetry_data, TELEMETRY, telemetry_package, &telemetry_package_len);
-    
-    void* unpacked_data;
-    CommuDataType unpacked_type;
-    if (PackageManager_unpackage(&pm, telemetry_package, telemetry_package_len, &unpacked_data, &unpacked_type)) {
-        if (unpacked_type == TELEMETRY) {
-            TelemetryStruct* ts = (TelemetryStruct*)unpacked_data;
-            // 使用解包后的数据...
-            free(unpacked_data);
-        }
-    }
-    
-    // 测试故障参数
-    FaultParams fault_params;
-    memset(&fault_params, 0, sizeof(FaultParams));
-    fault_params.fault_type = GYRO_INTERMITTENT_FAULT;
-    fault_params.params[0] = 0.5;
-    fault_params.param_count = 1;
-    fault_params.gyro_fault_idx = 1;
-    fault_params.fault_start_time = 100.0;
-    fault_params.fault_end_time = 200.0;
-    
-    uint8_t fault_package[1024];
-    uint16_t fault_package_len;
-    PackageManager_package(&pm, &fault_params, FAULT_PARA, fault_package, &fault_package_len);
-    
-    if (PackageManager_unpackage(&pm, fault_package, fault_package_len, &unpacked_data, &unpacked_type)) {
-        if (unpacked_type == FAULT_PARA) {
-            FaultParams* fp = (FaultParams*)unpacked_data;
-            // 使用解包后的数据...
-            free(unpacked_data);
-        }
-    }
-    
-    return 0;
 }
 
 #endif // BASE_H
