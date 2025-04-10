@@ -1,25 +1,28 @@
 #include "ai.h"
 #include "base.h"
 
-ai_handle network = AI_HANDLE_NULL;
+ai_handle m_network = AI_HANDLE_NULL;
+ai_u8 m_activations[AI_NETWORK_DATA_ACTIVATIONS_SIZE] = {0};
+ai_buffer* m_ai_input = NULL;
+ai_buffer* m_ai_output = NULL;
 
 void AI_Init(void)
 {
-    if (network != AI_HANDLE_NULL) {
+    if (m_network != AI_HANDLE_NULL) {
         return;
     }
 	ai_error err;
-	const ai_handle act_addr[] = { activations };
+	const ai_handle act_addr[] = { m_activations };
 		
 	// 构建AI实例
-	err = ai_network_create_and_init(&network, act_addr, NULL);	// network为实例对象
+	err = ai_network_create_and_init(&m_network, act_addr, NULL);	// network为实例对象
 	if (err.type != AI_ERROR_NONE) {
 		printf("E: AI error - type=%d code=%d\r\n", err.type, err.code);
 	}
 	
 	// 数据赋值
-	ai_input = ai_network_inputs_get(network, NULL);
-	ai_output = ai_network_outputs_get(network, NULL);
+	m_ai_input = ai_network_inputs_get(m_network, NULL);
+	m_ai_output = ai_network_outputs_get(m_network, NULL);
 }
 
 void AI_Run(ai_float *pIn[], ai_float *pOut[]) {
@@ -27,14 +30,14 @@ void AI_Run(ai_float *pIn[], ai_float *pOut[]) {
 
     // 更新IO句柄
     for (int i = 0; i < AI_NETWORK_IN_NUM; i++) {
-        ai_input[i].data = AI_HANDLE_PTR(pIn[i]);
+        m_ai_input[i].data = AI_HANDLE_PTR(pIn[i]);
     }
     for (int i = 0; i < AI_NETWORK_OUT_NUM; i++) {
-        ai_output[i].data = AI_HANDLE_PTR(pOut[i]);
+        m_ai_output[i].data = AI_HANDLE_PTR(pOut[i]);
     }
 
     // 运行推理
-    ai_i32 batch = ai_network_run(network, ai_input, ai_output);
+    ai_i32 batch = ai_network_run(m_network, m_ai_input, m_ai_output);
     if (batch <= 0) {
         printf("E: AI network run failed - batch=%d\r\n", batch);
         return;
@@ -200,7 +203,7 @@ void AI_Demo(void)
     }
 }
 
-AI_IOBuffer* AI_PrepareIO(telemetryStruct* pTelemetry) {
+AI_IOBuffer* AI_PrepareIO(TelemetryStruct* pTelemetry) {
     AI_IOBuffer* buffer = (AI_IOBuffer*)malloc(sizeof(AI_IOBuffer));
     
     // 分配输入输出指针数组

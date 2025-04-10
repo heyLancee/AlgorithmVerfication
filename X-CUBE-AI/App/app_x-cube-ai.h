@@ -39,14 +39,11 @@ data_in_1 \
 }; \
 
 #define AI_MNETWORK_OUT_1_SIZE_BYTES 1
-#define AI_MNETWORK_OUT_2_SIZE_BYTES 1
-#define AI_MNETWORK_OUT_NUM 2
+#define AI_MNETWORK_OUT_NUM 1
 #define DEF_DATA_OUT \
 AI_ALIGNED(4) ai_i8 data_out_1[AI_MNETWORK_OUT_1_SIZE_BYTES]; \
-AI_ALIGNED(4) ai_i8 data_out_2[AI_MNETWORK_OUT_2_SIZE_BYTES]; \
 ai_i8* data_outs[] = { \
-data_out_1, \
-data_out_2 \
+data_out_1 \
 }; \
 
 #define AI_NETWORK_DATA_ACTIVATIONS_START_ADDR 0xFFFFFFFF
