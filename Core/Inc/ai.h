@@ -2,6 +2,7 @@
 #define __AI_H
 
 #include "app_x-cube-ai.h"
+#include "base.h"
 
 #define AI_NAME AI_NETWORK_MODEL_NAME
 
@@ -11,16 +12,16 @@ typedef struct {
 } AI_IOBuffer;
 
 void AI_Init(void);
-void AI_Run(ai_float *pIn[], ai_float *pOut);
-AI_IOBuffer* AI_PrepareIO(telemetryStruct* pTelemetry);
+void AI_Run(ai_float *pIn[], ai_float *pOut[]);
+AI_IOBuffer* AI_PrepareIO(TelemetryStruct* pTelemetry);
 void AI_FreeIO(AI_IOBuffer* buffer) ;
 
 void AI_Demo(void);
 
-ai_handle network;
-ai_u8 activations[AI_NETWORK_DATA_ACTIVATIONS_SIZE];
-ai_buffer* ai_input;
-ai_buffer* ai_output;
+extern ai_handle m_network;
+extern ai_u8 m_activations[AI_NETWORK_DATA_ACTIVATIONS_SIZE];
+extern ai_buffer* m_ai_input;
+extern ai_buffer* m_ai_output;
 
 #endif // __AI_H
 

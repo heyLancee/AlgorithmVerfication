@@ -54,7 +54,7 @@ QueueHandle_t dataLenQueue = NULL;
 // 事件组可以代替信号量的工作，完成任务与任务，中断与任务的通信
 EventGroupHandle_t EventGroup;
 
-unsigned char recvBuffer[MAX_RECV_BUFFER] = {0};  // 接收缓冲�?
+unsigned char recvBuffer[MAX_RECV_BUFFER] = {0};  // 接收缓冲�???
 
 /* USER CODE END Variables */
 osThreadId defaultTaskHandle;
@@ -192,7 +192,7 @@ void StartDataRecv(void const * argument)
 {
   /* USER CODE BEGIN StartDataRecv */
   printf("Data recv task created \r\n");
-  package_manager_init("SSSSSSSS", "EEEEEEEE");
+  PackageManager_init(package_manager,"SSSSSSSS", "EEEEEEEE");
 
   CommuDataType dataType;
   uint16_t dataLen = 0;
@@ -210,7 +210,7 @@ void StartDataRecv(void const * argument)
       continue;
     }
 
-    // 接受dataLen长度的数据
+    // 接受dataLen长度的数�??
     for (int i = 0; i < dataLen; i++) {
       if (pdTRUE!= xQueueReceive(dataQueue, &recvBuffer[i], portMAX_DELAY)) {
         printf("Queue receive failed\r\n");
@@ -218,30 +218,34 @@ void StartDataRecv(void const * argument)
       }
     }
     
-    char* data = unpackage_data((char*)recvBuffer, &dataType);
-    if (data == NULL) {
-      printf("Unpackage failed\r\n");
+    void* unpacked_data = NULL;
+    CommuDataType unpacked_type;
+
+    if (PackageManager_unpackage((const PackageManager*)&package_manager, recvBuffer, dataLen, &unpacked_data, &unpacked_type) == 0) {
+      printf("Failed to unpack data\r\n");
       continue;
     }
-		
-    switch (dataType) {
-      case telemetryType: {
-        telemetryStruct* telemetry = (telemetryStruct*)data;
-        
+
+    switch (unpacked_type) {
+      case TELEMETRY: {
+        TelemetryStruct* telemetry = (TelemetryStruct*)unpacked_data;
         xTaskNotify(DataProcessHandle, (uint32_t)telemetry, eSetValueWithOverwrite);
         break;
+      }	
+      default: {
+        printf("Unknown data type: %d\r\n", unpacked_type);
+        break;	
       }
-      default:
-        printf("Unknown data type: %d\r\n", dataType);
-        break;
+    }
+
+    if (unpacked_data != NULL) {
+        free(unpacked_data); // 释放内存 
     }
         
     dataLen = 0;
     memset(recvBuffer, 0, MAX_RECV_BUFFER);
-    release_buffer(&data);
   }
 	
-  package_manager_cleanup();
   /* USER CODE END StartDataRecv */
 }
 
@@ -289,12 +293,12 @@ void StartDataProcess(void const * argument)
   /* USER CODE BEGIN StartDataProcess */
 	printf("Data process task created \r\n");
   
-  uint32_t notificationValue;
-  telemetryStruct* pTelemetry;
+  uint32_t* notificationValue = NULL;
+  TelemetryStruct* pTelemetry = NULL;
   /* Infinite loop */
   while(1) {
-    if (xTaskNotifyWait(0, ULONG_MAX, &notificationValue, portMAX_DELAY) == pdTRUE) {
-      pTelemetry = (telemetryStruct*)notificationValue;
+    if (xTaskNotifyWait(0, ULONG_MAX, notificationValue, portMAX_DELAY) == pdTRUE) {
+      pTelemetry = (TelemetryStruct*)notificationValue;
       if (pTelemetry == NULL) {
         printf("E: Failed to get telemetry data\r\n");
         continue;
@@ -308,23 +312,24 @@ void StartDataProcess(void const * argument)
       
       AI_Run(buffer->inputs, buffer->outputs);
       // TODO: 处理输出结果
-      pTelemetry->torqueX = 1;
-      pTelemetry->torqueY = 2;
-      pTelemetry->torqueZ = 3;
+      pTelemetry->tx = 1;
+      pTelemetry->tx = 2;
+      pTelemetry->tz = 3;
+
+      // void PackageManager_package(const PackageManager* pm, const void* data, CommuDataType commu_type, uint8_t* output);
+      uint16_t telemetry_package_len = calculate_package_length((const PackageManager*)&package_manager, TELEMETRY, NO_FAULT);
+      uint8_t telemetry_package[telemetry_package_len];
+      PackageManager_package((const PackageManager*)&package_manager, pTelemetry, TELEMETRY, telemetry_package);
       
-      // 通过串口DMA发走
-      char* data = package_data(pTelemetry, telemetryType); 
-      if (data == NULL) {
-        printf("E: Failed to package data\r\n");
-        continue;
-      }
-      
-      HAL_UART_Transmit_DMA(&huart1, (uint8_t*)data, strlen(data));
+      HAL_UART_Transmit_DMA(&huart1, telemetry_package, telemetry_package_len);
       
       AI_FreeIO(buffer);
       xEventGroupSetBits(EventGroup, 0x01);
       
-      release_buffer(&pTelemetry);
+			if (pTelemetry != NULL) {
+				free(pTelemetry);
+			}
+			
     }
   }
   /* USER CODE END StartDataProcess */
