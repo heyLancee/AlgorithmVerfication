@@ -54,8 +54,6 @@ QueueHandle_t dataLenQueue = NULL;
 // 事件组可以代替信号量的工作，完成任务与任务，中断与任务的通信
 EventGroupHandle_t EventGroup;
 
-unsigned char recvBuffer[MAX_RECV_BUFFER] = {0};  // 接收缓冲�???
-
 /* USER CODE END Variables */
 osThreadId defaultTaskHandle;
 osThreadId DataRecvHandle;
@@ -192,9 +190,8 @@ void StartDataRecv(void const * argument)
 {
   /* USER CODE BEGIN StartDataRecv */
   printf("Data recv task created \r\n");
-  PackageManager_init(package_manager,"SSSSSSSS", "EEEEEEEE");
 
-  CommuDataType dataType;
+  unsigned char recvBuffer[MAX_RECV_BUFFER] = {0};  // 接收缓冲�???
   uint16_t dataLen = 0;
 
   /* Infinite loop */
@@ -210,7 +207,7 @@ void StartDataRecv(void const * argument)
       continue;
     }
 
-    // 接受dataLen长度的数�??
+    // 接受dataLen长度的数�??
     for (int i = 0; i < dataLen; i++) {
       if (pdTRUE!= xQueueReceive(dataQueue, &recvBuffer[i], portMAX_DELAY)) {
         printf("Queue receive failed\r\n");
@@ -221,7 +218,7 @@ void StartDataRecv(void const * argument)
     void* unpacked_data = NULL;
     CommuDataType unpacked_type;
 
-    if (PackageManager_unpackage((const PackageManager*)&package_manager, recvBuffer, dataLen, &unpacked_data, &unpacked_type) == 0) {
+    if (PackageManager_unpackage((const PackageManager*)package_manager, recvBuffer, dataLen, &unpacked_data, &unpacked_type) == 0) {
       printf("Failed to unpack data\r\n");
       continue;
     }
@@ -229,6 +226,7 @@ void StartDataRecv(void const * argument)
     switch (unpacked_type) {
       case TELEMETRY: {
         TelemetryStruct* telemetry = (TelemetryStruct*)unpacked_data;
+        printf("Received telemetry data length: %d\r\n", dataLen);
         xTaskNotify(DataProcessHandle, (uint32_t)telemetry, eSetValueWithOverwrite);
         break;
       }	
@@ -316,12 +314,13 @@ void StartDataProcess(void const * argument)
       pTelemetry->tx = 2;
       pTelemetry->tz = 3;
 
-      // void PackageManager_package(const PackageManager* pm, const void* data, CommuDataType commu_type, uint8_t* output);
-      uint16_t telemetry_package_len = calculate_package_length((const PackageManager*)&package_manager, TELEMETRY, NO_FAULT);
+      printf("process done for telemetry data length: %d\r\n", sizeof(TelemetryStruct));
+
+      uint16_t telemetry_package_len = calculate_package_length((const PackageManager*)package_manager, TELEMETRY, NO_FAULT);
       uint8_t telemetry_package[telemetry_package_len];
-      PackageManager_package((const PackageManager*)&package_manager, pTelemetry, TELEMETRY, telemetry_package);
+      PackageManager_package((const PackageManager*)package_manager, pTelemetry, TELEMETRY, telemetry_package);
       
-      HAL_UART_Transmit_DMA(&huart1, telemetry_package, telemetry_package_len);
+      // HAL_UART_Transmit_DMA(&huart1, telemetry_package, telemetry_package_len);
       
       AI_FreeIO(buffer);
       xEventGroupSetBits(EventGroup, 0x01);

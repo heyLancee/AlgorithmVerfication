@@ -245,12 +245,14 @@ void PackageManager_package(const PackageManager* pm, const void* data, CommuDat
 int PackageManager_unpackage(const PackageManager* pm, const uint8_t* package, uint16_t package_len, void** output, CommuDataType* output_type) {
     // ????
     if (package_len < pm->header_len + 4 + pm->tail_len) {
+        printf("packet length is shorter than expected length %d\n", pm->header_len + 4 + pm->tail_len);
         return 0; // ?????
     }
     
     // ??????
     if (memcmp(package, pm->header, pm->header_len) != 0 || 
         memcmp(package + package_len - pm->tail_len, pm->tail, pm->tail_len) != 0) {
+        printf("header or tail mismatch\n");
         return 0; // ???????
     }
     
@@ -263,13 +265,18 @@ int PackageManager_unpackage(const PackageManager* pm, const uint8_t* package, u
     uint16_t data_len = package_len - pm->header_len - 4 - pm->tail_len;
     
     if (*output_type == TELEMETRY) {
-        if (data_len != sizeof(TelemetryStruct)) {
+        if (data_len != get_telemetry_encoded_length()) {
+            printf("telemetry struct data length mismatch\n");
             return 0; // ???????
         }
         *output = malloc(sizeof(TelemetryStruct));
         TelemetryStruct_from_byte_array((TelemetryStruct*)*output, data_start);
         return 1;
     } else if (*output_type == FAULT_PARA) {
+        if (data_len != get_faultparams_encoded_length(((const FaultParams*)data_start)->fault_type)) {
+            printf("fault params struct data length mismatch\n");
+            return 0; // ???????
+        }
         *output = malloc(sizeof(FaultParams));
         FaultParams_from_byte_array((FaultParams*)*output, data_start);
         return 1;

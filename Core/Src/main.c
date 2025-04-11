@@ -30,6 +30,7 @@
 /* USER CODE BEGIN Includes */
 #include "base.h"
 #include "ai.h"
+#include "stdlib.h"
 
 /* USER CODE END Includes */
 
@@ -92,7 +93,9 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-  PackageManager_init(package_manager, "SSSSSSSS", "EEEEEEEE");
+  package_manager = malloc(sizeof(PackageManager));
+  PackageManager_init(package_manager, "SSSSSSSS\0", "EEEEEEEE\0");
+  
   /* USER CODE END Init */
 
   /* Configure the system clock */
