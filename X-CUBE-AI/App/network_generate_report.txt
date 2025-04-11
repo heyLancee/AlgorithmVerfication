@@ -1,30 +1,30 @@
 ST Edge AI Core v2.0.0-20049
-Created date          : 2025-04-11 00:18:11
-Parameters            : generate --target stm32f4 --name network -m G:/code/AFTC/models/u_max_008/TD3_SunPointFaultSatellite_0_actor.onnx --compression low --verbosity 1 --workspace C:/Users/lxy/AppData/Local/Temp/mxAI_workspace51866402993007123756367570586064 --output C:/Users/lxy/.stm32cubemx/network_output
+Created date          : 2025-04-12 15:29:31
+Parameters            : generate --target stm32f4 --name network -m G:/code/AFTC/models/u_max_008/TD3_SunPointFaultSatellite_0_actor.onnx --compression none --verbosity 1 -O time --workspace C:/Users/lxy/AppData/Local/Temp/mxAI_workspace4723349643630013007335883111052536 --output C:/Users/lxy/.stm32cubemx/network_output
 
 Exec/report summary (generate)
---------------------------------------------------------------------------------------------------------
-model file         :   G:\code\AFTC\models\u_max_008\TD3_SunPointFaultSatellite_0_actor.onnx            
-type               :   onnx                                                                             
-c_name             :   network                                                                          
-compression        :   low                                                                              
-options            :   allocate-inputs, allocate-outputs                                                
-optimization       :   balanced                                                                         
-target/series      :   stm32f4                                                                          
-workspace dir      :   C:\Users\lxy\AppData\Local\Temp\mxAI_workspace51866402993007123756367570586064   
-output dir         :   C:\Users\lxy\.stm32cubemx\network_output                                         
-model_fmt          :   float                                                                            
-model_name         :   TD3_SunPointFaultSatellite_0_actor                                               
-model_hash         :   0x7bc577537a3a89b55759db98cb9ad84d                                               
-params #           :   125,604 items (490.64 KiB)                                                       
---------------------------------------------------------------------------------------------------------
-input 1/1          :   'input', f32(1x1x10), 40 Bytes, activations                                      
-output 1/1         :   'output', f32(1x1x3), 12 Bytes, activations                                      
-macc               :   126,339                                                                          
-weights (ro)       :   143,460 B (140.10 KiB) (1 segment) / -358,956(-71.4%) vs float model             
-activations (rw)   :   2,800 B (2.73 KiB) (1 segment) *                                                 
-ram (total)        :   2,800 B (2.73 KiB) = 2,800 + 0 + 0                                               
---------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------------------------------------------
+model file         :   G:\code\AFTC\models\u_max_008\TD3_SunPointFaultSatellite_0_actor.onnx              
+type               :   onnx                                                                               
+c_name             :   network                                                                            
+compression        :   none                                                                               
+options            :   allocate-inputs, allocate-outputs                                                  
+optimization       :   time                                                                               
+target/series      :   stm32f4                                                                            
+workspace dir      :   C:\Users\lxy\AppData\Local\Temp\mxAI_workspace4723349643630013007335883111052536   
+output dir         :   C:\Users\lxy\.stm32cubemx\network_output                                           
+model_fmt          :   float                                                                              
+model_name         :   TD3_SunPointFaultSatellite_0_actor                                                 
+model_hash         :   0x7bc577537a3a89b55759db98cb9ad84d                                                 
+params #           :   125,604 items (490.64 KiB)                                                         
+----------------------------------------------------------------------------------------------------------
+input 1/1          :   'input', f32(1x1x10), 40 Bytes, activations                                        
+output 1/1         :   'output', f32(1x1x3), 12 Bytes, activations                                        
+macc               :   126,339                                                                            
+weights (ro)       :   502,436 B (490.66 KiB) (1 segment) / +20(+0.0%) vs float model                     
+activations (rw)   :   2,800 B (2.73 KiB) (1 segment) *                                                   
+ram (total)        :   2,800 B (2.73 KiB) = 2,800 + 0 + 0                                                 
+----------------------------------------------------------------------------------------------------------
 (*) 'input'/'output' buffers can be used from the activations buffer
 
 Model name - TD3_SunPointFaultSatellite_0_actor
@@ -50,7 +50,7 @@ m_id   layer (type,original)           oshape          param/size             ma
 ------ ------------------------------- --------------- ----------------- --------- -------------- --- ------------------- --------------- ------------------ 
 2      node_8 (Nonlinearity, Relu)     [h:1,c:400]                             400         node_7   |                     -400(-100.0%)   
 ------ ------------------------------- --------------- ----------------- --------- -------------- --- ------------------- --------------- ------------------ 
-3      node_9 (Gemm, Gemm)             [h:1,c:300]                         120,300         node_8   | +122,224(+100.0%)                   Dense_[2]          
+3      node_9 (Gemm, Gemm)             [h:1,c:300]                         120,300         node_8   | +481,200(+100.0%)                   Dense_[2]          
                                                                                         l2_weight   | 
                                                                                           l2_bias   | 
 ------ ------------------------------- --------------- ----------------- --------- -------------- --- ------------------- --------------- ------------------ 
@@ -65,7 +65,7 @@ m_id   layer (type,original)           oshape          param/size             ma
 8      output (Eltwise, Mul)           [h:1,c:3]                                 3        node_12   | +24(+100.0%)        +3(+100.0%)     ScaleBias_[o][6]   
                                                                                           node_13   | 
 ------ ------------------------------- --------------- ----------------- --------- -------------- --- ------------------- --------------- ------------------ 
-model/c-model: macc=126,336/126,339 +3(+0.0%) weights=502,416/143,460 -358,956(-71.4%) activations=--/2,800 io=--/0
+model/c-model: macc=126,336/126,339 +3(+0.0%) weights=502,416/502,436 +20(+0.0%) activations=--/2,800 io=--/0
 
 
 
@@ -76,32 +76,32 @@ c-name                : network
 c-node #              : 7
 c-array #             : 16
 activations size      : 2800 (1 segment)
-weights size          : 143460 (1 segment)
+weights size          : 502436 (1 segment)
 macc                  : 126339
 inputs                : ['input_output']
 outputs               : ['output_output']
 
 C-Arrays (16)
------- ----------------- --------------- ------------------------- ------------------ --------- 
-c_id   name (*_array)    item/size       domain/mem-pool           c-type             comment   
------- ----------------- --------------- ------------------------- ------------------ --------- 
-0      input_output      10/40           activations/**default**   float              /input    
-1      node_10_output    300/1200        activations/**default**   float                        
-2      node_11_bias      3/12            weights/weights           const float                  
-3      node_11_output    3/12            activations/**default**   float                        
-4      node_11_weights   900/3600        weights/weights           const float                  
-5      node_12_output    3/12            activations/**default**   float                        
-6      node_7_bias       400/1600        weights/weights           const float                  
-7      node_7_output     400/1600        activations/**default**   float                        
-8      node_7_weights    4000/16000      weights/weights           const float                  
-9      node_8_output     400/1600        activations/**default**   float                        
-10     node_9_bias       300/1200        weights/weights           const float                  
-11     node_9_output     300/1200        activations/**default**   float                        
-12     node_9_weights    120000/121024   weights/weights           const lut8_float             
-13     output_bias       3/12            weights/weights           const float                  
-14     output_output     3/12            activations/**default**   float              /output   
-15     output_scale      3/12            weights/weights           const float                  
------- ----------------- --------------- ------------------------- ------------------ --------- 
+------ ----------------- --------------- ------------------------- ------------- --------- 
+c_id   name (*_array)    item/size       domain/mem-pool           c-type        comment   
+------ ----------------- --------------- ------------------------- ------------- --------- 
+0      input_output      10/40           activations/**default**   float         /input    
+1      node_10_output    300/1200        activations/**default**   float                   
+2      node_11_bias      3/12            weights/weights           const float             
+3      node_11_output    3/12            activations/**default**   float                   
+4      node_11_weights   900/3600        weights/weights           const float             
+5      node_12_output    3/12            activations/**default**   float                   
+6      node_7_bias       400/1600        weights/weights           const float             
+7      node_7_output     400/1600        activations/**default**   float                   
+8      node_7_weights    4000/16000      weights/weights           const float             
+9      node_8_output     400/1600        activations/**default**   float                   
+10     node_9_bias       300/1200        weights/weights           const float             
+11     node_9_output     300/1200        activations/**default**   float                   
+12     node_9_weights    120000/480000   weights/weights           const float             
+13     output_bias       3/12            weights/weights           const float             
+14     output_output     3/12            activations/**default**   float         /output   
+15     output_scale      3/12            weights/weights           const float             
+------ ----------------- --------------- ------------------------- ------------- --------- 
 
 C-Layers (7)
 ------ ---------------- ---- --------------- -------- -------- -------------------- ------------------- 
@@ -115,8 +115,8 @@ c_id   name (*_layer)   id   layer_type      macc     rom      tensors          
 1      node_8           2    Nonlinearity    400      0        I: node_7_output     f32(1x1x400) (7)    
                                                                O: node_8_output     f32(1x1x400) (9)    
 ------ ---------------- ---- --------------- -------- -------- -------------------- ------------------- 
-2      node_9           3    Dense           120300   122224   I: node_8_output     f32(1x1x400) (9)    
-                                                               W: node_9_weights    c8(300x400) (12)    
+2      node_9           3    Dense           120300   481200   I: node_8_output     f32(1x1x400) (9)    
+                                                               W: node_9_weights    f32(300x400) (12)   
                                                                W: node_9_bias       f32(300) (10)       
                                                                O: node_9_output     f32(1x1x300) (11)   
 ------ ---------------- ---- --------------- -------- -------- -------------------- ------------------- 
@@ -145,7 +145,7 @@ c_id    m_id   name (type)                    #op           type
 ------- ------ ------------------------ --------- -------------- 
 0       1      node_7 (Dense)               4,400   smul_f32_f32 
 1       2      node_8 (Nonlinearity)          400     op_f32_f32 
-2       3      node_9 (Dense)             120,300    smul_f32_f8 
+2       3      node_9 (Dense)             120,300   smul_f32_f32 
 3       4      node_10 (Nonlinearity)         300     op_f32_f32 
 4       5      node_11 (Dense)                903   smul_f32_f32 
 5       6      node_12 (Nonlinearity)          30     op_f32_f32 
@@ -157,9 +157,8 @@ Number of operation types
 ---------------- --------- ----------- 
 operation type           #           % 
 ---------------- --------- ----------- 
-smul_f32_f32         5,309        4.2% 
+smul_f32_f32       125,609       99.4% 
 op_f32_f32             730        0.6% 
-smul_f32_f8        120,300       95.2% 
 
 Complexity report (model)
 ------ ----------- ------------------------- ------------------------- ------ 
@@ -167,30 +166,30 @@ m_id   name        c_macc                    c_rom                     c_id
 ------ ----------- ------------------------- ------------------------- ------ 
 2      l2_weight   |                  0.3%   |                  0.0%   [1]    
 4      l3_weight   |                  0.2%   |                  0.0%   [3]    
-1      node_7      |                  3.5%   |||               12.3%   [0]    
-3      node_9      ||||||||||||||||  95.2%   ||||||||||||||||  85.2%   [2]    
-5      node_11     |                  0.7%   |                  2.5%   [4]    
+1      node_7      |                  3.5%   |                  3.5%   [0]    
+3      node_9      ||||||||||||||||  95.2%   ||||||||||||||||  95.8%   [2]    
+5      node_11     |                  0.7%   |                  0.7%   [4]    
 6      node_12     |                  0.0%   |                  0.0%   [5]    
 8      output      |                  0.0%   |                  0.0%   [6]    
 ------ ----------- ------------------------- ------------------------- ------ 
-macc=126,339 weights=143,460 act=2,800 ram_io=0
+macc=126,339 weights=502,436 act=2,800 ram_io=0
  
  Requested memory size by section - "stm32f4" target
  ------------------------------ ------- --------- ------- ------- 
  module                            text    rodata    data     bss 
  ------------------------------ ------- --------- ------- ------- 
  NetworkRuntime1000_CM4_GCC.a     6,968         0       0       0 
- network.o                          618        56   2,068     152 
+ network.o                          610        56   2,068     152 
  network_data.o                      48        16      88       0 
  lib (toolchain)*                   880         0      12       0 
  ------------------------------ ------- --------- ------- ------- 
- RT total**                       8,514        72   2,168     152 
+ RT total**                       8,506        72   2,168     152 
  ------------------------------ ------- --------- ------- ------- 
- weights                              0   143,464       0       0 
+ weights                              0   502,440       0       0 
  activations                          0         0       0   2,800 
  io                                   0         0       0       0 
  ------------------------------ ------- --------- ------- ------- 
- TOTAL                            8,514   143,536   2,168   2,952 
+ TOTAL                            8,506   502,512   2,168   2,952 
  ------------------------------ ------- --------- ------- ------- 
  *  toolchain objects (libm/libgcc*)
  ** RT AI runtime objects (kernels+infrastructure)
@@ -199,9 +198,9 @@ macc=126,339 weights=143,460 act=2,800 ram_io=0
   --------------------------------------------------
                FLASH (ro)     %*   RAM (rw)       % 
   --------------------------------------------------
-  RT total         10,754   7.0%      2,320   45.3% 
+  RT total         10,746   2.1%      2,320   45.3% 
   --------------------------------------------------
-  TOTAL           154,218             5,120         
+  TOTAL           513,186             5,120         
   --------------------------------------------------
   *  rt/total
 

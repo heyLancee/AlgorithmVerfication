@@ -88,7 +88,8 @@ void NMI_Handler(void)
 void HardFault_Handler(void)
 {
   /* USER CODE BEGIN HardFault_IRQn 0 */
-
+	volatile uint32_t* MSP = (uint32_t*)__get_MSP(); // ?????
+  printf("’ª÷∏’Î: 0x%08X\n", MSP);
   /* USER CODE END HardFault_IRQn 0 */
   while (1)
   {

@@ -1,309 +1,102 @@
 #include "ai.h"
 #include "base.h"
 
-ai_handle m_network = AI_HANDLE_NULL;
-ai_u8 m_activations[AI_NETWORK_DATA_ACTIVATIONS_SIZE] = {0};
+static  ai_handle m_network = AI_HANDLE_NULL;
+
+AI_ALIGNED(32)
+static ai_u8 m_activations[AI_NETWORK_DATA_ACTIVATIONS_SIZE] = {0};
+
+AI_ALIGNED(32)
+static ai_float in_data[AI_NETWORK_IN_1_SIZE];
+
+AI_ALIGNED(32)
+static ai_float out_data[AI_NETWORK_OUT_1_SIZE];
+
 ai_buffer* m_ai_input = NULL;
 ai_buffer* m_ai_output = NULL;
 
-void AI_Init(void)
-{
+// 初始化 AI 模型
+void AI_Init(void) {
     if (m_network != AI_HANDLE_NULL) {
+        return; // 已经初始化
+    }
+
+    ai_error err;
+
+    // 创建并初始化 AI 网络
+    const ai_handle act_addr[] = { m_activations };
+    err = ai_network_create_and_init(&m_network, act_addr, NULL);
+    if (err.type != AI_ERROR_NONE) {
+        printf("AI 初始化失败: type=%d, code=%d\n", err.type, err.code);
         return;
     }
-	ai_error err;
-	const ai_handle act_addr[] = { m_activations };
-		
-	// 构建AI实例
-	err = ai_network_create_and_init(&m_network, act_addr, NULL);	// network为实例对象
-	if (err.type != AI_ERROR_NONE) {
-		printf("E: AI error - type=%d code=%d\r\n", err.type, err.code);
-	}
-	
-	// 数据赋值
-	m_ai_input = ai_network_inputs_get(m_network, NULL);
-	m_ai_output = ai_network_outputs_get(m_network, NULL);
+
+    // 获取输入/输出缓冲区
+    m_ai_input = ai_network_inputs_get(m_network, NULL);
+    m_ai_output = ai_network_outputs_get(m_network, NULL);
+
+    if (m_ai_input == NULL || m_ai_output == NULL) {
+        printf("获取输入/输出缓冲区失败！\n");
+        ai_network_destroy(m_network);
+        m_network = AI_HANDLE_NULL;
+        return;
+    }
+
+    printf("AI 初始化成功！\n");
 }
 
-void AI_Run(ai_float *pIn[], ai_float *pOut[]) {
-	ai_error err;
+// 准备输入数据并运行推理
+int AI_Run_Inference(TelemetryStruct *pTelemetry) {
+    if (m_network == AI_HANDLE_NULL || m_ai_input == NULL || m_ai_output == NULL) {
+        printf("AI 未初始化！\n");
+        return -1;
+    }
 
-    // 更新IO句柄
-    for (int i = 0; i < AI_NETWORK_IN_NUM; i++) {
-        m_ai_input[i].data = AI_HANDLE_PTR(pIn[i]);
-    }
-    for (int i = 0; i < AI_NETWORK_OUT_NUM; i++) {
-        m_ai_output[i].data = AI_HANDLE_PTR(pOut[i]);
-    }
+    m_ai_input[0].data = AI_HANDLE_PTR(in_data);
+    m_ai_output[0].data = AI_HANDLE_PTR(out_data);
+
+    // 填充输入数据（示例：四元数 + 角速度）
+    in_data[0] = pTelemetry->q0;
+    in_data[1] = pTelemetry->q1;
+    in_data[2] = pTelemetry->q2;
+    in_data[3] = pTelemetry->q3;
+    in_data[4] = pTelemetry->wx;
+    in_data[5] = pTelemetry->wy;
+    in_data[6] = pTelemetry->wz;
+    in_data[7] = pTelemetry->rx;
+    in_data[8] = pTelemetry->ry;
+    in_data[9] = pTelemetry->rz;
 
     // 运行推理
-    ai_i32 batch = ai_network_run(m_network, m_ai_input, m_ai_output);
+    ai_i32 batch = ai_network_run(m_network, &m_ai_input[0], &m_ai_output[0]);
     if (batch <= 0) {
-        printf("E: AI network run failed - batch=%d\r\n", batch);
-        return;
+        ai_error err = ai_network_get_error(m_network);
+        printf("推理失败: batch=%d, type=%d, code=%d\n", batch, err.type, err.code);
+        return -1;
     }
+
+    // 获取输出结果（假设单输出）
+    float* output_data = (float*)m_ai_output[0].data;
+    printf("推理结果: %.2f, %.2f, %.2f\n", output_data[0], output_data[1], output_data[2]);
+
+    return 0;
 }
 
-void AI_Demo(void)
-{
-    // 为每个输入准备数据缓冲区
-    ai_float* input_data[AI_NETWORK_IN_NUM];  // 输入数据缓冲区数组
-    for(int n = 0; n < AI_NETWORK_IN_NUM; n++) {
-        // 获取当前输入的大小
-        int size = 0;
-        if (n < AI_NETWORK_IN_NUM) {  // 首先检查是否在有效范围内
-            switch(n) {
-                case 0: 
-                    #ifdef AI_NETWORK_IN_1_SIZE
-                    size = AI_NETWORK_IN_1_SIZE; 
-                    #endif
-                    break;
-                case 1: 
-                    #ifdef AI_NETWORK_IN_2_SIZE
-                    size = AI_NETWORK_IN_2_SIZE; 
-                    #endif
-                    break;
-                case 2: 
-                    #ifdef AI_NETWORK_IN_3_SIZE
-                    size = AI_NETWORK_IN_3_SIZE; 
-                    #endif
-                    break;
-                default: 
-                    printf("E: Invalid input index %d\r\n", n);
-                    break;
-            }
+// 释放资源
+void AI_DeInit(void) {
+    if (m_network != AI_HANDLE_NULL) {
+        // 释放手动分配的内存
+        if (m_ai_input != NULL && m_ai_input[0].data != NULL) {
+            free(m_ai_input[0].data);
+        }
+        if (m_ai_output != NULL && m_ai_output[0].data != NULL) {
+            free(m_ai_output[0].data);
         }
 
-        if (size == 0) {
-            printf("E: Failed to get size for input %d\r\n", n);
-            return;
-        }
-        
-        input_data[n] = (ai_float*)malloc(size * sizeof(ai_float));
-        
-        // 填充示例数据
-        for(int i = 0; i < size; i++) {
-            input_data[n][i] = (ai_float)(i + 1 + n * size);
-        }
-    }
-    
-    // 为每个输出准备数据缓冲区
-    ai_float* output_data[AI_NETWORK_OUT_NUM];
-    for(int n = 0; n < AI_NETWORK_OUT_NUM; n++) {
-        // 获取当前输出的大小
-        int size = 0;
-        if (n < AI_NETWORK_OUT_NUM) {
-            switch(n) {
-                case 0: 
-                    #ifdef AI_NETWORK_OUT_1_SIZE
-                    size = AI_NETWORK_OUT_1_SIZE; 
-                    #endif
-                    break;
-                case 1: 
-                    #ifdef AI_NETWORK_OUT_2_SIZE
-                    size = AI_NETWORK_OUT_2_SIZE; 
-                    #endif
-                    break;
-                case 2: 
-                    #ifdef AI_NETWORK_OUT_3_SIZE
-                    size = AI_NETWORK_OUT_3_SIZE; 
-                    #endif
-                    break;
-                default: 
-                    printf("E: Invalid output index %d\r\n", n);
-                    break;
-            }
-        }
-
-        if (size == 0) {
-            printf("E: Failed to get size for output %d\r\n", n);
-            return;
-        }
-
-        output_data[n] = (ai_float*)malloc(size * sizeof(ai_float));
-        memset(output_data[n], 0, size * sizeof(ai_float));
-    }
-    
-    // 初始化 AI
-    AI_Init();
-    
-    // 运行推理
-    AI_Run(input_data, output_data);
-    
-    // 打印所有输入数据
-    for(int n = 0; n < AI_NETWORK_IN_NUM; n++) {
-        int size = 0;
-        switch(n) {
-            case 0: 
-                #ifdef AI_NETWORK_IN_1_SIZE
-                size = AI_NETWORK_IN_1_SIZE; 
-                #endif
-                break;
-            case 1: 
-                #ifdef AI_NETWORK_IN_2_SIZE
-                size = AI_NETWORK_IN_2_SIZE; 
-                #endif
-                break;
-            case 2: 
-                #ifdef AI_NETWORK_IN_3_SIZE
-                size = AI_NETWORK_IN_3_SIZE; 
-                #endif
-                break;
-            default: 
-                size = 0; 
-                break;
-        }
-        
-        printf("Input %d[%d]: [", n+1, size);
-        for(int i = 0; i < size; i++) {
-            printf("%.2f", input_data[n][i]);
-            if(i < size - 1) printf(", ");
-        }
-        printf("]\r\n");
-    }
-    
-    // 打印所有输出数据
-    for(int n = 0; n < AI_NETWORK_OUT_NUM; n++) {
-        int size = 0;
-        switch(n) {
-            case 0: 
-                #ifdef AI_NETWORK_OUT_1_SIZE
-                size = AI_NETWORK_OUT_1_SIZE; 
-                #endif
-                break;
-            case 1: 
-                #ifdef AI_NETWORK_OUT_2_SIZE
-                size = AI_NETWORK_OUT_2_SIZE; 
-                #endif
-                break;
-            case 2: 
-                #ifdef AI_NETWORK_OUT_3_SIZE
-                size = AI_NETWORK_OUT_3_SIZE; 
-                #endif
-                break;
-            default: 
-                size = 0; 
-                break;
-        }
-
-        printf("Output %d[%d]: [", n+1, size);
-        for(int i = 0; i < size; i++) {
-            printf("%.2f", output_data[n][i]);
-            if(i < size - 1) printf(", ");
-        }
-        printf("]\r\n");
-    }
-    
-    // 释放内存
-    for(int n = 0; n < AI_NETWORK_IN_NUM; n++) {
-        free(input_data[n]);
-    }
-    for(int n = 0; n < AI_NETWORK_OUT_NUM; n++) {
-        free(output_data[n]);
+        ai_network_destroy(m_network);
+        m_network = AI_HANDLE_NULL;
+        m_ai_input = NULL;
+        m_ai_output = NULL;
+        printf("AI 资源已释放！\n");
     }
 }
-
-AI_IOBuffer* AI_PrepareIO(TelemetryStruct* pTelemetry) {
-    AI_IOBuffer* buffer = (AI_IOBuffer*)malloc(sizeof(AI_IOBuffer));
-    
-    // 分配输入输出指针数组
-    buffer->inputs = (ai_float**)malloc(AI_NETWORK_IN_NUM * sizeof(ai_float*));
-    buffer->outputs = (ai_float**)malloc(AI_NETWORK_OUT_NUM * sizeof(ai_float*));
-    
-    // 为每个输入分配内存
-    for(int n = 0; n < AI_NETWORK_IN_NUM; n++) {
-        int size = 0;
-        if (n < AI_NETWORK_IN_NUM) {
-            switch(n) {
-                case 0: 
-                    #ifdef AI_NETWORK_IN_1_SIZE
-                    size = AI_NETWORK_IN_1_SIZE; 
-                    #endif
-                    break;
-                case 1: 
-                    #ifdef AI_NETWORK_IN_2_SIZE
-                    size = AI_NETWORK_IN_2_SIZE; 
-                    #endif
-                    break;
-                case 2: 
-                    #ifdef AI_NETWORK_IN_3_SIZE
-                    size = AI_NETWORK_IN_3_SIZE; 
-                    #endif
-                    break;
-                default: 
-                    printf("E: Invalid input index %d\r\n", n);
-                    break;
-            }
-        }
-
-        if (size == 0) {
-            printf("E: Failed to get size for input %d\r\n", n);
-            AI_FreeIO(buffer);  // 释放已分配的内存
-            return NULL;
-        }
-        
-        buffer->inputs[n] = (ai_float*)malloc(size * sizeof(ai_float));
-        
-        // TODO: 从 pTelemetry 中填充输入数据
-    }
-    
-    // 为每个输出分配内存
-    for(int n = 0; n < AI_NETWORK_OUT_NUM; n++) {
-        int size = 0;
-        if (n < AI_NETWORK_OUT_NUM) {
-            switch(n) {
-                case 0: 
-                    #ifdef AI_NETWORK_OUT_1_SIZE
-                    size = AI_NETWORK_OUT_1_SIZE; 
-                    #endif
-                    break;
-                case 1: 
-                    #ifdef AI_NETWORK_OUT_2_SIZE
-                    size = AI_NETWORK_OUT_2_SIZE; 
-                    #endif
-                    break;
-                case 2: 
-                    #ifdef AI_NETWORK_OUT_3_SIZE
-                    size = AI_NETWORK_OUT_3_SIZE; 
-                    #endif
-                    break;
-                default: 
-                    printf("E: Invalid output index %d\r\n", n);
-                    break;
-            }
-        }
-
-        if (size == 0) {
-            printf("E: Failed to get size for output %d\r\n", n);
-            AI_FreeIO(buffer);  // 释放已分配的内存
-            return NULL;
-        }
-        
-        buffer->outputs[n] = (ai_float*)malloc(size * sizeof(ai_float));
-        memset(buffer->outputs[n], 0, size * sizeof(ai_float));
-    }
-    
-    return buffer;
-}
-
-// 释放IO缓冲区的内存
-void AI_FreeIO(AI_IOBuffer* buffer) {
-    if (buffer == NULL) return;
-    
-    if (buffer->inputs != NULL) {
-        for(int n = 0; n < AI_NETWORK_IN_NUM; n++) {
-            free(buffer->inputs[n]);
-        }
-        free(buffer->inputs);
-    }
-    
-    if (buffer->outputs != NULL) {
-        for(int n = 0; n < AI_NETWORK_OUT_NUM; n++) {
-            free(buffer->outputs[n]);
-        }
-        free(buffer->outputs);
-    }
-    
-    free(buffer);
-}
-
