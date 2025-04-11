@@ -1,7 +1,7 @@
 {
     "_allocate_inputs": 4,
     "_allocate_outputs": 4,
-    "cli_parameters": "generate --target stm32f4 --name network -m G:/code/AFTC/models/u_max_008/TD3_SunPointFaultSatellite_0_actor.onnx --compression none --verbosity 1 -O time --workspace C:/Users/lxy/AppData/Local/Temp/mxAI_workspace4723349643630013007335883111052536 --output C:/Users/lxy/.stm32cubemx/network_output",
+    "cli_parameters": "generate --target stm32f4 --name network -m G:/code/AFTC/models/dynamic_net/attitude_dynamics_model.onnx --compression none --verbosity 1 -O time --workspace C:/Users/lxy/AppData/Local/Temp/mxAI_workspace4664528155540017067516331067407752 --output C:/Users/lxy/.stm32cubemx/network_output",
     "cli_version": {
         "extra": "20049",
         "major": 2,
@@ -11,12 +11,12 @@
     "cli_version_str": "2.0.0-20049",
     "code_size": 0,
     "compression": [],
-    "date_time": "2025-04-12T15:29:28+0800",
+    "date_time": "2025-04-12T15:19:40+0800",
     "error": 0,
     "error_str": [],
     "exec_cmd": "generate",
     "exec_duration": 0.0,
-    "hash": "0x7bc577537a3a89b55759db98cb9ad84d",
+    "hash": "0x983e0c005452f2babf8836b020b2f467",
     "inputs": [
         "input"
     ],
@@ -25,13 +25,13 @@
             "c_id": [],
             "extras": {
                 "n_macc": 0,
-                "n_params": 4000,
-                "psize": 16000,
+                "n_params": 384,
+                "psize": 1536,
                 "rom_size": 0
             },
             "id": 0,
             "inputs": [],
-            "name": "l1_weight",
+            "name": "fc1_weight",
             "original": "Gemm",
             "type": "Placeholder"
         },
@@ -39,13 +39,13 @@
             "c_id": [],
             "extras": {
                 "n_macc": 0,
-                "n_params": 400,
-                "psize": 1600,
+                "n_params": 64,
+                "psize": 256,
                 "rom_size": 0
             },
             "id": 0,
             "inputs": [],
-            "name": "l1_bias",
+            "name": "fc1_bias",
             "original": "Gemm",
             "type": "Placeholder"
         },
@@ -55,13 +55,13 @@
             ],
             "extras": {
                 "n_macc": 0,
-                "n_params": 120000,
-                "psize": 480000,
+                "n_params": 8192,
+                "psize": 32768,
                 "rom_size": 0
             },
             "id": 2,
             "inputs": [],
-            "name": "l2_weight",
+            "name": "fc2_weight",
             "original": "Gemm",
             "type": "Placeholder"
         },
@@ -69,13 +69,13 @@
             "c_id": [],
             "extras": {
                 "n_macc": 0,
-                "n_params": 300,
-                "psize": 1200,
+                "n_params": 128,
+                "psize": 512,
                 "rom_size": 0
             },
             "id": 2,
             "inputs": [],
-            "name": "l2_bias",
+            "name": "fc2_bias",
             "original": "Gemm",
             "type": "Placeholder"
         },
@@ -85,13 +85,13 @@
             ],
             "extras": {
                 "n_macc": 0,
-                "n_params": 900,
-                "psize": 3600,
+                "n_params": 384,
+                "psize": 1536,
                 "rom_size": 0
             },
             "id": 4,
             "inputs": [],
-            "name": "l3_weight",
+            "name": "fc3_weight",
             "original": "Gemm",
             "type": "Placeholder"
         },
@@ -105,22 +105,8 @@
             },
             "id": 4,
             "inputs": [],
-            "name": "l3_bias",
+            "name": "fc3_bias",
             "original": "Gemm",
-            "type": "Placeholder"
-        },
-        {
-            "c_id": [],
-            "extras": {
-                "n_macc": 0,
-                "n_params": 1,
-                "psize": 4,
-                "rom_size": 0
-            },
-            "id": 7,
-            "inputs": [],
-            "name": "node_13",
-            "original": "Mul",
             "type": "Placeholder"
         },
         {
@@ -130,13 +116,12 @@
                 "n_params": 0,
                 "psize": 0,
                 "rom_output": {
-                    "c_size": 40,
+                    "c_size": 24,
                     "fmt": {
                         "format": "float"
                     },
                     "shape": [
-                        10,
-                        1
+                        6
                     ]
                 },
                 "rom_size": 0
@@ -152,26 +137,25 @@
                 0
             ],
             "extras": {
-                "n_macc": 4400,
+                "n_macc": 448,
                 "n_params": 0,
                 "psize": 0,
                 "rom_output": {
-                    "c_size": 1600,
+                    "c_size": 256,
                     "fmt": {
                         "format": "float"
                     },
                     "shape": [
-                        400,
-                        1
+                        64
                     ]
                 },
-                "rom_size": 17600
+                "rom_size": 1792
             },
             "id": 1,
             "inputs": [
                 "input",
-                "l1_weight",
-                "l1_bias"
+                "fc1_weight",
+                "fc1_bias"
             ],
             "name": "node_7",
             "original": "Gemm",
@@ -180,17 +164,16 @@
         {
             "c_id": [],
             "extras": {
-                "n_macc": 400,
+                "n_macc": 64,
                 "n_params": 0,
                 "psize": 0,
                 "rom_output": {
-                    "c_size": 1600,
+                    "c_size": 256,
                     "fmt": {
                         "format": "float"
                     },
                     "shape": [
-                        400,
-                        1
+                        64
                     ]
                 },
                 "rom_size": 0
@@ -208,26 +191,25 @@
                 2
             ],
             "extras": {
-                "n_macc": 120300,
+                "n_macc": 8320,
                 "n_params": 0,
                 "psize": 0,
                 "rom_output": {
-                    "c_size": 1200,
+                    "c_size": 512,
                     "fmt": {
                         "format": "float"
                     },
                     "shape": [
-                        300,
-                        1
+                        128
                     ]
                 },
-                "rom_size": 481200
+                "rom_size": 33280
             },
             "id": 3,
             "inputs": [
                 "node_8",
-                "l2_weight",
-                "l2_bias"
+                "fc2_weight",
+                "fc2_bias"
             ],
             "name": "node_9",
             "original": "Gemm",
@@ -236,17 +218,16 @@
         {
             "c_id": [],
             "extras": {
-                "n_macc": 300,
+                "n_macc": 128,
                 "n_params": 0,
                 "psize": 0,
                 "rom_output": {
-                    "c_size": 1200,
+                    "c_size": 512,
                     "fmt": {
                         "format": "float"
                     },
                     "shape": [
-                        300,
-                        1
+                        128
                     ]
                 },
                 "rom_size": 0
@@ -264,7 +245,7 @@
                 4
             ],
             "extras": {
-                "n_macc": 903,
+                "n_macc": 387,
                 "n_params": 0,
                 "psize": 0,
                 "rom_output": {
@@ -273,86 +254,28 @@
                         "format": "float"
                     },
                     "shape": [
-                        3,
-                        1
+                        3
                     ]
                 },
-                "rom_size": 3612
+                "rom_size": 1548
             },
             "id": 5,
             "inputs": [
                 "node_10",
-                "l3_weight",
-                "l3_bias"
-            ],
-            "name": "node_11",
-            "original": "Gemm",
-            "type": "Gemm"
-        },
-        {
-            "c_id": [
-                5
-            ],
-            "extras": {
-                "n_macc": 30,
-                "n_params": 0,
-                "psize": 0,
-                "rom_output": {
-                    "c_size": 12,
-                    "fmt": {
-                        "format": "float"
-                    },
-                    "shape": [
-                        3,
-                        1
-                    ]
-                },
-                "rom_size": 0
-            },
-            "id": 6,
-            "inputs": [
-                "node_11"
-            ],
-            "name": "node_12",
-            "original": "Tanh",
-            "type": "Nonlinearity"
-        },
-        {
-            "c_id": [
-                6
-            ],
-            "extras": {
-                "n_macc": 3,
-                "n_params": 0,
-                "psize": 0,
-                "rom_output": {
-                    "c_size": 12,
-                    "fmt": {
-                        "format": "float"
-                    },
-                    "shape": [
-                        3,
-                        1
-                    ]
-                },
-                "rom_size": 24
-            },
-            "id": 8,
-            "inputs": [
-                "node_12",
-                "node_13"
+                "fc3_weight",
+                "fc3_bias"
             ],
             "name": "output",
-            "original": "Mul",
-            "type": "Eltwise"
+            "original": "Gemm",
+            "type": "Gemm"
         }
     ],
     "model_files": [
-        "G:\\code\\AFTC\\models\\u_max_008\\TD3_SunPointFaultSatellite_0_actor.onnx"
+        "G:\\code\\AFTC\\models\\dynamic_net\\attitude_dynamics_model.onnx"
     ],
-    "model_n_params": 125604,
-    "model_name": "TD3_SunPointFaultSatellite_0_actor",
-    "model_size": 502416,
+    "model_n_params": 9155,
+    "model_name": "attitude_dynamics_model",
+    "model_size": 36620,
     "model_type": "onnx",
     "name": "network",
     "outputs": [
@@ -362,18 +285,18 @@
         0,
         0
     ],
-    "ram_size": 2800,
+    "ram_size": 768,
     "report_version": 1.1,
     "rom_cfact": 1.0,
     "rom_heap_inspector": 2048,
     "rom_inputs": [
         {
-            "c_size": 40,
+            "c_size": 24,
             "c_type": "float",
             "name": "input"
         }
     ],
-    "rom_n_macc": 126339,
+    "rom_n_macc": 9347,
     "rom_outputs": [
         {
             "c_size": 12,
@@ -381,7 +304,7 @@
             "name": "output"
         }
     ],
-    "rom_size": 502436,
+    "rom_size": 36620,
     "strategy": "",
     "tools_api_version": "2.0.0-20049",
     "tools_version": "2.0.0-20049",

@@ -12,11 +12,8 @@ typedef struct {
 } AI_IOBuffer;
 
 void AI_Init(void);
-void AI_Run(ai_float *pIn[], ai_float *pOut[]);
-AI_IOBuffer* AI_PrepareIO(TelemetryStruct* pTelemetry);
-void AI_FreeIO(AI_IOBuffer* buffer) ;
-
-void AI_Demo(void);
+int AI_Run_Inference(TelemetryStruct *pTelemetry);
+void AI_DeInit(void);
 
 extern ai_handle m_network;
 extern ai_u8 m_activations[AI_NETWORK_DATA_ACTIVATIONS_SIZE];

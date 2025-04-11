@@ -30,6 +30,7 @@
 /* USER CODE BEGIN Includes */
 #include "base.h"
 #include "ai.h"
+#include "stdlib.h"
 
 /* USER CODE END Includes */
 
@@ -51,7 +52,7 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-unsigned char rx_buf[MAX_RECV_BUFFER];
+static unsigned char rx_buf[MAX_RECV_BUFFER];
 PackageManager *package_manager = NULL;
 /* USER CODE END PV */
 
@@ -92,7 +93,9 @@ int main(void)
   HAL_Init();
 
   /* USER CODE BEGIN Init */
-  PackageManager_init(package_manager, "SSSSSSSS", "EEEEEEEE");
+  package_manager = malloc(sizeof(PackageManager));
+  PackageManager_init(package_manager, "SSSSSSSS\0", "EEEEEEEE\0");
+  
   /* USER CODE END Init */
 
   /* Configure the system clock */
@@ -192,7 +195,6 @@ void SystemClock_Config(void)
 /* USER CODE BEGIN 4 */
 void HAL_UART_IdleCallback(UART_HandleTypeDef *huart) {
 	if (huart->Instance == USART1) {
-    printf("IDLE\r\n");
 		// 清除IDLE中断标志
     __HAL_UART_CLEAR_IDLEFLAG(&huart1);
 		// 停止 DMA 传输
