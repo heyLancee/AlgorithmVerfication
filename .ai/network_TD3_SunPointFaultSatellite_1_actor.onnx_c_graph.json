@@ -52,7 +52,7 @@
         }
     },
     "activations_alignment": 4,
-    "arguments": "generate --target stm32f4 --name network -m G:/code/AFTC/models/u_max_008_light/TD3_SunPointFaultSatellite_1_actor.onnx --compression none --verbosity 1 -O time --workspace C:/Users/lxy/AppData/Local/Temp/mxAI_workspace4699205689240011862559314215392171 --output C:/Users/lxy/.stm32cubemx/network_output",
+    "arguments": "generate --target stm32f4 --name network -m G:/code/AFTC/models/u_max_008_light/TD3_SunPointFaultSatellite_1_actor.onnx --compression none --verbosity 1 -O time --workspace C:/Users/lxy/AppData/Local/Temp/mxAI_workspace705319156556007899656133381116881 --output C:/Users/lxy/.stm32cubemx/network_output",
     "c_activations_count": 1,
     "c_arrays": [
         {
@@ -699,7 +699,7 @@
         ]
     },
     "data_alignment": 4,
-    "date_time": "2025-04-12T15:25:31+0800",
+    "date_time": "2025-04-12T21:57:47+0800",
     "inputs": [
         "input_output"
     ],

@@ -1,207 +1,207 @@
 ST Edge AI Core v2.0.0-20049
-Created date          : 2025-04-12 15:29:31
-Parameters            : generate --target stm32f4 --name network -m G:/code/AFTC/models/u_max_008/TD3_SunPointFaultSatellite_0_actor.onnx --compression none --verbosity 1 -O time --workspace C:/Users/lxy/AppData/Local/Temp/mxAI_workspace4723349643630013007335883111052536 --output C:/Users/lxy/.stm32cubemx/network_output
+Created date          : 2025-04-12 21:57:49
+Parameters            : generate --target stm32f4 --name network -m G:/code/AFTC/models/u_max_008_light/TD3_SunPointFaultSatellite_1_actor.onnx --compression none --verbosity 1 -O time --workspace C:/Users/lxy/AppData/Local/Temp/mxAI_workspace705319156556007899656133381116881 --output C:/Users/lxy/.stm32cubemx/network_output
 
 Exec/report summary (generate)
-----------------------------------------------------------------------------------------------------------
-model file         :   G:\code\AFTC\models\u_max_008\TD3_SunPointFaultSatellite_0_actor.onnx              
-type               :   onnx                                                                               
-c_name             :   network                                                                            
-compression        :   none                                                                               
-options            :   allocate-inputs, allocate-outputs                                                  
-optimization       :   time                                                                               
-target/series      :   stm32f4                                                                            
-workspace dir      :   C:\Users\lxy\AppData\Local\Temp\mxAI_workspace4723349643630013007335883111052536   
-output dir         :   C:\Users\lxy\.stm32cubemx\network_output                                           
-model_fmt          :   float                                                                              
-model_name         :   TD3_SunPointFaultSatellite_0_actor                                                 
-model_hash         :   0x7bc577537a3a89b55759db98cb9ad84d                                                 
-params #           :   125,604 items (490.64 KiB)                                                         
-----------------------------------------------------------------------------------------------------------
-input 1/1          :   'input', f32(1x1x10), 40 Bytes, activations                                        
-output 1/1         :   'output', f32(1x1x3), 12 Bytes, activations                                        
-macc               :   126,339                                                                            
-weights (ro)       :   502,436 B (490.66 KiB) (1 segment) / +20(+0.0%) vs float model                     
-activations (rw)   :   2,800 B (2.73 KiB) (1 segment) *                                                   
-ram (total)        :   2,800 B (2.73 KiB) = 2,800 + 0 + 0                                                 
-----------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------------
+model file         :   G:\code\AFTC\models\u_max_008_light\TD3_SunPointFaultSatellite_1_actor.onnx       
+type               :   onnx                                                                              
+c_name             :   network                                                                           
+compression        :   none                                                                              
+options            :   allocate-inputs, allocate-outputs                                                 
+optimization       :   time                                                                              
+target/series      :   stm32f4                                                                           
+workspace dir      :   C:\Users\lxy\AppData\Local\Temp\mxAI_workspace705319156556007899656133381116881   
+output dir         :   C:\Users\lxy\.stm32cubemx\network_output                                          
+model_fmt          :   float                                                                             
+model_name         :   TD3_SunPointFaultSatellite_1_actor                                                
+model_hash         :   0x158002b2debbaff20a189031c8093420                                                
+params #           :   9,860 items (38.52 KiB)                                                           
+---------------------------------------------------------------------------------------------------------
+input 1/1          :   'input', f32(1x1x10), 40 Bytes, activations                                       
+output 1/1         :   'output', f32(1x1x3), 12 Bytes, activations                                       
+macc               :   10,087                                                                            
+weights (ro)       :   39,460 B (38.54 KiB) (1 segment) / +20(+0.1%) vs float model                      
+activations (rw)   :   768 B (768 B) (1 segment) *                                                       
+ram (total)        :   768 B (768 B) = 768 + 0 + 0                                                       
+---------------------------------------------------------------------------------------------------------
 (*) 'input'/'output' buffers can be used from the activations buffer
 
-Model name - TD3_SunPointFaultSatellite_0_actor
------- ------------------------------- --------------- ----------------- --------- -------------- --- ------------------- --------------- ------------------ 
-m_id   layer (type,original)           oshape          param/size             macc   connected to   | c_size              c_macc          c_type             
------- ------------------------------- --------------- ----------------- --------- -------------- --- ------------------- --------------- ------------------ 
-0      l1_weight (Placeholder, Gemm)   [h:400,c:10]    4,000/16,000                                 | -16,000(-100.0%)                    
-       l1_bias (Placeholder, Gemm)     [c:400]         400/1,600                                    | -1,600(-100.0%)                     
------- ------------------------------- --------------- ----------------- --------- -------------- --- ------------------- --------------- ------------------ 
-2      l2_weight (Placeholder, Gemm)   [h:300,c:400]   120,000/480,000                              | -480,000(-100.0%)   +400(+100.0%)   Nonlinearity_[1]   
-       l2_bias (Placeholder, Gemm)     [c:300]         300/1,200                                    | -1,200(-100.0%)                     
------- ------------------------------- --------------- ----------------- --------- -------------- --- ------------------- --------------- ------------------ 
-4      l3_weight (Placeholder, Gemm)   [h:3,c:300]     900/3,600                                    | -3,600(-100.0%)     +300(+100.0%)   Nonlinearity_[3]   
-       l3_bias (Placeholder, Gemm)     [c:3]           3/12                                         | -12(-100.0%)                        
------- ------------------------------- --------------- ----------------- --------- -------------- --- ------------------- --------------- ------------------ 
-7      node_13 (Placeholder, Mul)      []              1/4                                          | -4(-100.0%)                         
------- ------------------------------- --------------- ----------------- --------- -------------- --- ------------------- --------------- ------------------ 
-0      input (Input, )                 [h:1,c:10]                                                   |                                     
------- ------------------------------- --------------- ----------------- --------- -------------- --- ------------------- --------------- ------------------ 
-1      node_7 (Gemm, Gemm)             [h:1,c:400]                           4,400          input   | +17,600(+100.0%)                    Dense_[0]          
-                                                                                        l1_weight   | 
-                                                                                          l1_bias   | 
------- ------------------------------- --------------- ----------------- --------- -------------- --- ------------------- --------------- ------------------ 
-2      node_8 (Nonlinearity, Relu)     [h:1,c:400]                             400         node_7   |                     -400(-100.0%)   
------- ------------------------------- --------------- ----------------- --------- -------------- --- ------------------- --------------- ------------------ 
-3      node_9 (Gemm, Gemm)             [h:1,c:300]                         120,300         node_8   | +481,200(+100.0%)                   Dense_[2]          
-                                                                                        l2_weight   | 
-                                                                                          l2_bias   | 
------- ------------------------------- --------------- ----------------- --------- -------------- --- ------------------- --------------- ------------------ 
-4      node_10 (Nonlinearity, Relu)    [h:1,c:300]                             300         node_9   |                     -300(-100.0%)   
------- ------------------------------- --------------- ----------------- --------- -------------- --- ------------------- --------------- ------------------ 
-5      node_11 (Gemm, Gemm)            [h:1,c:3]                               903        node_10   | +3,612(+100.0%)                     Dense_[4]          
-                                                                                        l3_weight   | 
-                                                                                          l3_bias   | 
------- ------------------------------- --------------- ----------------- --------- -------------- --- ------------------- --------------- ------------------ 
-6      node_12 (Nonlinearity, Tanh)    [h:1,c:3]                                30        node_11   |                                     Nonlinearity_[5]   
------- ------------------------------- --------------- ----------------- --------- -------------- --- ------------------- --------------- ------------------ 
-8      output (Eltwise, Mul)           [h:1,c:3]                                 3        node_12   | +24(+100.0%)        +3(+100.0%)     ScaleBias_[o][6]   
-                                                                                          node_13   | 
------- ------------------------------- --------------- ----------------- --------- -------------- --- ------------------- --------------- ------------------ 
-model/c-model: macc=126,336/126,339 +3(+0.0%) weights=502,416/502,436 +20(+0.0%) activations=--/2,800 io=--/0
+Model name - TD3_SunPointFaultSatellite_1_actor
+------ --------------------------------------- -------------- -------------- ------- -------------------- --- --------------- ----------------- ------------------ 
+m_id   layer (type,original)                   oshape         param/size        macc         connected to   | c_size          c_macc            c_type             
+------ --------------------------------------- -------------- -------------- ------- -------------------- --- --------------- ----------------- ------------------ 
+1      l1_weight (Placeholder, Gemm)           [h:128,c:10]   1,280/5,120                                   | +512(+10.0%)    +1,408(+100.0%)   Dense_[0]          
+       l1_bias (Placeholder, Gemm)             [c:128]        128/512                                       | -512(-100.0%)                     
+------ --------------------------------------- -------------- -------------- ------- -------------------- --- --------------- ----------------- ------------------ 
+3      l2_weight (Placeholder, Gemm)           [h:64,c:128]   8,192/32,768                                  | +256(+0.8%)     +8,256(+100.0%)   Dense_[2]          
+       l2_bias (Placeholder, Gemm)             [c:64]         64/256                                        | -256(-100.0%)                     
+------ --------------------------------------- -------------- -------------- ------- -------------------- --- --------------- ----------------- ------------------ 
+5      l3_weight (Placeholder, Gemm)           [h:3,c:64]     192/768                                       | +12(+1.6%)      +195(+100.0%)     Dense_[4]          
+       l3_bias (Placeholder, Gemm)             [c:3]          3/12                                          | -12(-100.0%)                      
+------ --------------------------------------- -------------- -------------- ------- -------------------- --- --------------- ----------------- ------------------ 
+8      _Constant_output_0 (Placeholder, Mul)   []             1/4                                           | +20(+500.0%)    +6(+100.0%)       ScaleBias_[o][6]   
+------ --------------------------------------- -------------- -------------- ------- -------------------- --- --------------- ----------------- ------------------ 
+0      input (Input, )                         [h:1,c:10]                                                   |                                   
+------ --------------------------------------- -------------- -------------- ------- -------------------- --- --------------- ----------------- ------------------ 
+1      _l1_Gemm_output_0 (Gemm, Gemm)          [h:1,c:128]                     1,408                input   |                 -1,408(-100.0%)   
+                                                                                                l1_weight   | 
+                                                                                                  l1_bias   | 
+------ --------------------------------------- -------------- -------------- ------- -------------------- --- --------------- ----------------- ------------------ 
+2      _Relu_output_0 (Nonlinearity, Relu)     [h:1,c:128]                       128    _l1_Gemm_output_0   |                                   Nonlinearity_[1]   
+------ --------------------------------------- -------------- -------------- ------- -------------------- --- --------------- ----------------- ------------------ 
+3      _l2_Gemm_output_0 (Gemm, Gemm)          [h:1,c:64]                      8,256       _Relu_output_0   |                 -8,256(-100.0%)   
+                                                                                                l2_weight   | 
+                                                                                                  l2_bias   | 
+------ --------------------------------------- -------------- -------------- ------- -------------------- --- --------------- ----------------- ------------------ 
+4      _Relu_1_output_0 (Nonlinearity, Relu)   [h:1,c:64]                         64    _l2_Gemm_output_0   |                                   Nonlinearity_[3]   
+------ --------------------------------------- -------------- -------------- ------- -------------------- --- --------------- ----------------- ------------------ 
+5      _l3_Gemm_output_0 (Gemm, Gemm)          [h:1,c:3]                         195     _Relu_1_output_0   |                 -195(-100.0%)     
+                                                                                                l3_weight   | 
+                                                                                                  l3_bias   | 
+------ --------------------------------------- -------------- -------------- ------- -------------------- --- --------------- ----------------- ------------------ 
+6      _Tanh_output_0 (Nonlinearity, Tanh)     [h:1,c:3]                          30    _l3_Gemm_output_0   |                                   Nonlinearity_[5]   
+------ --------------------------------------- -------------- -------------- ------- -------------------- --- --------------- ----------------- ------------------ 
+8      output (Eltwise, Mul)                   [h:1,c:3]                           3       _Tanh_output_0   |                 -3(-100.0%)       
+                                                                                       _Constant_output_0   | 
+------ --------------------------------------- -------------- -------------- ------- -------------------- --- --------------- ----------------- ------------------ 
+model/c-model: macc=10,084/10,087 +3(+0.0%) weights=39,440/39,460 +20(+0.1%) activations=--/768 io=--/0
 
 
 
 Generated C-graph summary
 ------------------------------------------------------------------------------------------------------------------------
-model name            : TD3_SunPointFaultSatellite_0_actor
+model name            : TD3_SunPointFaultSatellite_1_actor
 c-name                : network
 c-node #              : 7
 c-array #             : 16
-activations size      : 2800 (1 segment)
-weights size          : 502436 (1 segment)
-macc                  : 126339
+activations size      : 768 (1 segment)
+weights size          : 39460 (1 segment)
+macc                  : 10087
 inputs                : ['input_output']
 outputs               : ['output_output']
 
 C-Arrays (16)
------- ----------------- --------------- ------------------------- ------------- --------- 
-c_id   name (*_array)    item/size       domain/mem-pool           c-type        comment   
------- ----------------- --------------- ------------------------- ------------- --------- 
-0      input_output      10/40           activations/**default**   float         /input    
-1      node_10_output    300/1200        activations/**default**   float                   
-2      node_11_bias      3/12            weights/weights           const float             
-3      node_11_output    3/12            activations/**default**   float                   
-4      node_11_weights   900/3600        weights/weights           const float             
-5      node_12_output    3/12            activations/**default**   float                   
-6      node_7_bias       400/1600        weights/weights           const float             
-7      node_7_output     400/1600        activations/**default**   float                   
-8      node_7_weights    4000/16000      weights/weights           const float             
-9      node_8_output     400/1600        activations/**default**   float                   
-10     node_9_bias       300/1200        weights/weights           const float             
-11     node_9_output     300/1200        activations/**default**   float                   
-12     node_9_weights    120000/480000   weights/weights           const float             
-13     output_bias       3/12            weights/weights           const float             
-14     output_output     3/12            activations/**default**   float         /output   
-15     output_scale      3/12            weights/weights           const float             
------- ----------------- --------------- ------------------------- ------------- --------- 
+------ --------------------------- ------------ ------------------------- ------------- --------- 
+c_id   name (*_array)              item/size    domain/mem-pool           c-type        comment   
+------ --------------------------- ------------ ------------------------- ------------- --------- 
+0      _Relu_1_output_0_output     64/256       activations/**default**   float                   
+1      _Relu_output_0_output       128/512      activations/**default**   float                   
+2      _Tanh_output_0_output       3/12         activations/**default**   float                   
+3      _l1_Gemm_output_0_bias      128/512      weights/weights           const float             
+4      _l1_Gemm_output_0_output    128/512      activations/**default**   float                   
+5      _l1_Gemm_output_0_weights   1280/5120    weights/weights           const float             
+6      _l2_Gemm_output_0_bias      64/256       weights/weights           const float             
+7      _l2_Gemm_output_0_output    64/256       activations/**default**   float                   
+8      _l2_Gemm_output_0_weights   8192/32768   weights/weights           const float             
+9      _l3_Gemm_output_0_bias      3/12         weights/weights           const float             
+10     _l3_Gemm_output_0_output    3/12         activations/**default**   float                   
+11     _l3_Gemm_output_0_weights   192/768      weights/weights           const float             
+12     input_output                10/40        activations/**default**   float         /input    
+13     output_bias                 3/12         weights/weights           const float             
+14     output_output               3/12         activations/**default**   float         /output   
+15     output_scale                3/12         weights/weights           const float             
+------ --------------------------- ------------ ------------------------- ------------- --------- 
 
 C-Layers (7)
------- ---------------- ---- --------------- -------- -------- -------------------- ------------------- 
-c_id   name (*_layer)   id   layer_type      macc     rom      tensors              shape (array id)    
------- ---------------- ---- --------------- -------- -------- -------------------- ------------------- 
-0      node_7           1    Dense           4400     17600    I: input_output      f32(1x1x10) (0)     
-                                                               W: node_7_weights    f32(400x10) (8)     
-                                                               W: node_7_bias       f32(400) (6)        
-                                                               O: node_7_output     f32(1x1x400) (7)    
------- ---------------- ---- --------------- -------- -------- -------------------- ------------------- 
-1      node_8           2    Nonlinearity    400      0        I: node_7_output     f32(1x1x400) (7)    
-                                                               O: node_8_output     f32(1x1x400) (9)    
------- ---------------- ---- --------------- -------- -------- -------------------- ------------------- 
-2      node_9           3    Dense           120300   481200   I: node_8_output     f32(1x1x400) (9)    
-                                                               W: node_9_weights    f32(300x400) (12)   
-                                                               W: node_9_bias       f32(300) (10)       
-                                                               O: node_9_output     f32(1x1x300) (11)   
------- ---------------- ---- --------------- -------- -------- -------------------- ------------------- 
-3      node_10          4    Nonlinearity    300      0        I: node_9_output     f32(1x1x300) (11)   
-                                                               O: node_10_output    f32(1x1x300) (1)    
------- ---------------- ---- --------------- -------- -------- -------------------- ------------------- 
-4      node_11          5    Dense           903      3612     I: node_10_output    f32(1x1x300) (1)    
-                                                               W: node_11_weights   f32(3x300) (4)      
-                                                               W: node_11_bias      f32(3) (2)          
-                                                               O: node_11_output    f32(1x1x3) (3)      
------- ---------------- ---- --------------- -------- -------- -------------------- ------------------- 
-5      node_12          6    Nonlinearity    30       0        I: node_11_output    f32(1x1x3) (3)      
-                                                               O: node_12_output    f32(1x1x3) (5)      
------- ---------------- ---- --------------- -------- -------- -------------------- ------------------- 
-6      output           8    ScaleBias       6        24       I: node_12_output    f32(1x1x3) (5)      
-                                                               W: output_scale      f32(3) (15)         
-                                                               W: output_bias       f32(3) (13)         
-                                                               O: output_output     f32(1x1x3) (14)     
------- ---------------- ---- --------------- -------- -------- -------------------- ------------------- 
+------ ------------------- ---- --------------- ------ ------- ------------------------------ ------------------ 
+c_id   name (*_layer)      id   layer_type      macc   rom     tensors                        shape (array id)   
+------ ------------------- ---- --------------- ------ ------- ------------------------------ ------------------ 
+0      _l1_Gemm_output_0   1    Dense           1408   5632    I: input_output                f32(1x1x10) (12)   
+                                                               W: _l1_Gemm_output_0_weights   f32(128x10) (5)    
+                                                               W: _l1_Gemm_output_0_bias      f32(128) (3)       
+                                                               O: _l1_Gemm_output_0_output    f32(1x1x128) (4)   
+------ ------------------- ---- --------------- ------ ------- ------------------------------ ------------------ 
+1      _Relu_output_0      2    Nonlinearity    128    0       I: _l1_Gemm_output_0_output    f32(1x1x128) (4)   
+                                                               O: _Relu_output_0_output       f32(1x1x128) (1)   
+------ ------------------- ---- --------------- ------ ------- ------------------------------ ------------------ 
+2      _l2_Gemm_output_0   3    Dense           8256   33024   I: _Relu_output_0_output       f32(1x1x128) (1)   
+                                                               W: _l2_Gemm_output_0_weights   f32(64x128) (8)    
+                                                               W: _l2_Gemm_output_0_bias      f32(64) (6)        
+                                                               O: _l2_Gemm_output_0_output    f32(1x1x64) (7)    
+------ ------------------- ---- --------------- ------ ------- ------------------------------ ------------------ 
+3      _Relu_1_output_0    4    Nonlinearity    64     0       I: _l2_Gemm_output_0_output    f32(1x1x64) (7)    
+                                                               O: _Relu_1_output_0_output     f32(1x1x64) (0)    
+------ ------------------- ---- --------------- ------ ------- ------------------------------ ------------------ 
+4      _l3_Gemm_output_0   5    Dense           195    780     I: _Relu_1_output_0_output     f32(1x1x64) (0)    
+                                                               W: _l3_Gemm_output_0_weights   f32(3x64) (11)     
+                                                               W: _l3_Gemm_output_0_bias      f32(3) (9)         
+                                                               O: _l3_Gemm_output_0_output    f32(1x1x3) (10)    
+------ ------------------- ---- --------------- ------ ------- ------------------------------ ------------------ 
+5      _Tanh_output_0      6    Nonlinearity    30     0       I: _l3_Gemm_output_0_output    f32(1x1x3) (10)    
+                                                               O: _Tanh_output_0_output       f32(1x1x3) (2)     
+------ ------------------- ---- --------------- ------ ------- ------------------------------ ------------------ 
+6      output              8    ScaleBias       6      24      I: _Tanh_output_0_output       f32(1x1x3) (2)     
+                                                               W: output_scale                f32(3) (15)        
+                                                               W: output_bias                 f32(3) (13)        
+                                                               O: output_output               f32(1x1x3) (14)    
+------ ------------------- ---- --------------- ------ ------- ------------------------------ ------------------ 
 
 
 
 Number of operations per c-layer
-------- ------ ------------------------ --------- -------------- 
-c_id    m_id   name (type)                    #op           type 
-------- ------ ------------------------ --------- -------------- 
-0       1      node_7 (Dense)               4,400   smul_f32_f32 
-1       2      node_8 (Nonlinearity)          400     op_f32_f32 
-2       3      node_9 (Dense)             120,300   smul_f32_f32 
-3       4      node_10 (Nonlinearity)         300     op_f32_f32 
-4       5      node_11 (Dense)                903   smul_f32_f32 
-5       6      node_12 (Nonlinearity)          30     op_f32_f32 
-6       8      output (ScaleBias)               6   smul_f32_f32 
-------- ------ ------------------------ --------- -------------- 
-total                                     126,339 
+------- ------ --------------------------------- -------- -------------- 
+c_id    m_id   name (type)                            #op           type 
+------- ------ --------------------------------- -------- -------------- 
+0       1      _l1_Gemm_output_0 (Dense)            1,408   smul_f32_f32 
+1       2      _Relu_output_0 (Nonlinearity)          128     op_f32_f32 
+2       3      _l2_Gemm_output_0 (Dense)            8,256   smul_f32_f32 
+3       4      _Relu_1_output_0 (Nonlinearity)         64     op_f32_f32 
+4       5      _l3_Gemm_output_0 (Dense)              195   smul_f32_f32 
+5       6      _Tanh_output_0 (Nonlinearity)           30     op_f32_f32 
+6       8      output (ScaleBias)                       6   smul_f32_f32 
+------- ------ --------------------------------- -------- -------------- 
+total                                              10,087 
 
 Number of operation types
----------------- --------- ----------- 
-operation type           #           % 
----------------- --------- ----------- 
-smul_f32_f32       125,609       99.4% 
-op_f32_f32             730        0.6% 
+---------------- ------- ----------- 
+operation type         #           % 
+---------------- ------- ----------- 
+smul_f32_f32       9,865       97.8% 
+op_f32_f32           222        2.2% 
 
 Complexity report (model)
------- ----------- ------------------------- ------------------------- ------ 
-m_id   name        c_macc                    c_rom                     c_id   
------- ----------- ------------------------- ------------------------- ------ 
-2      l2_weight   |                  0.3%   |                  0.0%   [1]    
-4      l3_weight   |                  0.2%   |                  0.0%   [3]    
-1      node_7      |                  3.5%   |                  3.5%   [0]    
-3      node_9      ||||||||||||||||  95.2%   ||||||||||||||||  95.8%   [2]    
-5      node_11     |                  0.7%   |                  0.7%   [4]    
-6      node_12     |                  0.0%   |                  0.0%   [5]    
-8      output      |                  0.0%   |                  0.0%   [6]    
------- ----------- ------------------------- ------------------------- ------ 
-macc=126,339 weights=502,436 act=2,800 ram_io=0
+------ -------------------- ------------------------- ------------------------- ------ 
+m_id   name                 c_macc                    c_rom                     c_id   
+------ -------------------- ------------------------- ------------------------- ------ 
+1      l1_weight            |||               14.0%   |||               14.3%   [0]    
+3      l2_weight            ||||||||||||||||  81.8%   ||||||||||||||||  83.7%   [2]    
+5      l3_weight            |                  1.9%   |                  2.0%   [4]    
+8      _Constant_output_0   |                  0.1%   |                  0.1%   [6]    
+2      _Relu_output_0       |                  1.3%   |                  0.0%   [1]    
+4      _Relu_1_output_0     |                  0.6%   |                  0.0%   [3]    
+6      _Tanh_output_0       |                  0.3%   |                  0.0%   [5]    
+------ -------------------- ------------------------- ------------------------- ------ 
+macc=10,087 weights=39,460 act=768 ram_io=0
  
  Requested memory size by section - "stm32f4" target
- ------------------------------ ------- --------- ------- ------- 
- module                            text    rodata    data     bss 
- ------------------------------ ------- --------- ------- ------- 
- NetworkRuntime1000_CM4_GCC.a     6,968         0       0       0 
- network.o                          610        56   2,068     152 
- network_data.o                      48        16      88       0 
- lib (toolchain)*                   880         0      12       0 
- ------------------------------ ------- --------- ------- ------- 
- RT total**                       8,506        72   2,168     152 
- ------------------------------ ------- --------- ------- ------- 
- weights                              0   502,440       0       0 
- activations                          0         0       0   2,800 
- io                                   0         0       0       0 
- ------------------------------ ------- --------- ------- ------- 
- TOTAL                            8,506   502,512   2,168   2,952 
- ------------------------------ ------- --------- ------- ------- 
+ ------------------------------ ------- -------- ------- ----- 
+ module                            text   rodata    data   bss 
+ ------------------------------ ------- -------- ------- ----- 
+ NetworkRuntime1000_CM4_GCC.a     6,968        0       0     0 
+ network.o                          602       56   2,068   152 
+ network_data.o                      48       16      88     0 
+ lib (toolchain)*                   880        0      12     0 
+ ------------------------------ ------- -------- ------- ----- 
+ RT total**                       8,498       72   2,168   152 
+ ------------------------------ ------- -------- ------- ----- 
+ weights                              0   39,464       0     0 
+ activations                          0        0       0   768 
+ io                                   0        0       0     0 
+ ------------------------------ ------- -------- ------- ----- 
+ TOTAL                            8,498   39,536   2,168   920 
+ ------------------------------ ------- -------- ------- ----- 
  *  toolchain objects (libm/libgcc*)
  ** RT AI runtime objects (kernels+infrastructure)
   
   Summary - "stm32f4" target
-  --------------------------------------------------
-               FLASH (ro)     %*   RAM (rw)       % 
-  --------------------------------------------------
-  RT total         10,746   2.1%      2,320   45.3% 
-  --------------------------------------------------
-  TOTAL           513,186             5,120         
-  --------------------------------------------------
+  ---------------------------------------------------
+               FLASH (ro)      %*   RAM (rw)       % 
+  ---------------------------------------------------
+  RT total         10,738   21.4%      2,320   75.1% 
+  ---------------------------------------------------
+  TOTAL            50,202              3,088         
+  ---------------------------------------------------
   *  rt/total
 
 
