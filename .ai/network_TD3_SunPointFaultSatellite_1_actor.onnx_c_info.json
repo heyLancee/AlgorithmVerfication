@@ -457,44 +457,44 @@
   ],
   "environment": {
     "generated_model": {
-      "generated_time": "2025-04-12T15:25:31+0800",
+      "generated_time": "2025-04-12T21:57:47+0800",
       "model_files": [
         {
           "name": "network_data_params.h",
-          "signature": "0x870a02fc82947a583f2e84e432467e5c"
+          "signature": "0xd70f3aab52e3c9f243451b5414807b68"
         },
         {
           "name": "network_data_params.c",
-          "signature": "0xd1d824b704f54d92ce69d8f3c1b432fa"
+          "signature": "0x25fad5b3fb4601e3abf752319de7daad"
         },
         {
           "name": "network_data.h",
-          "signature": "0x3245fc0097325b0739f283de11f5ca4e"
+          "signature": "0x307d40bdb8b17a1401d40d9ef088d6fe"
         },
         {
           "name": "network_data.c",
-          "signature": "0x47df6d1c8c67991deff2e24f070b5d63"
+          "signature": "0xefcee5ebe9f9a8dd22f238ae5b975cb0"
         },
         {
           "name": "network_config.h",
-          "signature": "0x10a076ab195c334b5c366e8fecdf4a0c"
+          "signature": "0xd26d69e8ad478e2f7c6ee918b76841fd"
         },
         {
           "name": "network.h",
-          "signature": "0xc6f5ebd62df333cde7fd58b3329a64c9"
+          "signature": "0xdcfd353e77115f921318542c9a3dcf99"
         },
         {
           "name": "network.c",
-          "signature": "0x42bb346800dc68c0ee1f6ab6cb3832de"
+          "signature": "0x6dfebd3d83ca68bcf4c0b3b14cc93caf"
         }
       ],
       "name": "network"
     },
-    "network_signature": "0xe735f0879b54c377",
+    "network_signature": "0xb43c231cec81e52c",
     "test_name": "",
     "tools": [
       {
-        "arguments": "generate --target stm32f4 --name network -m G:/code/AFTC/models/u_max_008_light/TD3_SunPointFaultSatellite_1_actor.onnx --compression none --verbosity 1 -O time --workspace C:/Users/lxy/AppData/Local/Temp/mxAI_workspace4699205689240011862559314215392171 --output C:/Users/lxy/.stm32cubemx/network_output",
+        "arguments": "generate --target stm32f4 --name network -m G:/code/AFTC/models/u_max_008_light/TD3_SunPointFaultSatellite_1_actor.onnx --compression none --verbosity 1 -O time --workspace C:/Users/lxy/AppData/Local/Temp/mxAI_workspace705319156556007899656133381116881 --output C:/Users/lxy/.stm32cubemx/network_output",
         "environment": [
           "STATS_TYPE=X-CUBE-AI"
         ],

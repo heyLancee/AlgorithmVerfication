@@ -51,8 +51,8 @@
 QueueHandle_t dataQueue = NULL;
 QueueHandle_t dataLenQueue = NULL;
 
-static unsigned char recvBuffer[MAX_RECV_BUFFER] = {0};  // 接收缓冲�?????
-uint8_t sendBuffer[MAX_RECV_BUFFER] = {0};  // 发送缓冲区
+static unsigned char recvBuffer[MAX_RECV_BUFFER] = {0};  // 接收缓冲�??????
+uint8_t sendBuffer[MAX_RECV_BUFFER] = {0};  // 发�?�缓冲区
 // 事件组可以代替信号量的工作，完成任务与任务，中断与任务的通信
 EventGroupHandle_t EventGroup;
 
@@ -153,7 +153,7 @@ void MX_FREERTOS_Init(void) {
   LCDConrtolHandle = osThreadCreate(osThread(LCDConrtol), NULL);
 
   /* definition and creation of DataProcess */
-  osThreadDef(DataProcess, StartDataProcess, osPriorityHigh, 0, 1024);
+  osThreadDef(DataProcess, StartDataProcess, osPriorityHigh, 0, 128);
   DataProcessHandle = osThreadCreate(osThread(DataProcess), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
@@ -208,7 +208,7 @@ void StartDataRecv(void const * argument)
       continue;
     }
 
-    // 接受dataLen长度的数�????
+    // 接受dataLen长度的数�?????
     for (int i = 0; i < dataLen; i++) {
       if (pdTRUE!= xQueueReceive(dataQueue, &recvBuffer[i], portMAX_DELAY)) {
         printf("Queue receive failed\r\n");
@@ -312,25 +312,15 @@ void StartDataProcess(void const * argument)
         return;
       }
 
-      // 2. 直接读取输出数据（假设输出是 float[3]�?
+      // 2. 直接读取输出数据（假设输出是 float[3]�??
       float* output_data = (float*)m_ai_output[0].data;
-      
       pTelemetry->tx = output_data[0];
       pTelemetry->ty = output_data[1];
       pTelemetry->tz = output_data[2];
-      printf("遥测保存的结果: %.2f, %.2f, %.2f\n", 
-        pTelemetry->tx, pTelemetry->ty, pTelemetry->tz);
 
       uint16_t telemetry_package_len = calculate_package_length((const PackageManager*)package_manager, TELEMETRY, NO_FAULT);
       PackageManager_package((const PackageManager*)package_manager, (const void*)pTelemetry, TELEMETRY, sendBuffer);
-      
-      // 打印telemetry_package
-      printf("Telemetry package: ");
-      for (int i = 0; i < telemetry_package_len; i++) {
-        printf("%02X ", sendBuffer[i]);
-      }
       HAL_UART_Transmit_DMA(&huart1, sendBuffer, telemetry_package_len);
-      
       xEventGroupSetBits(EventGroup, 0x01);
       
 			if (pTelemetry != NULL) {

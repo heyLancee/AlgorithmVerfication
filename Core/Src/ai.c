@@ -74,11 +74,6 @@ int AI_Run_Inference(TelemetryStruct *pTelemetry) {
         printf("推理失败: batch=%d, type=%d, code=%d\n", batch, err.type, err.code);
         return -1;
     }
-
-    // 获取输出结果（假设单输出）
-    float* output_data = (float*)m_ai_output[0].data;
-    printf("推理结果: %.2f, %.2f, %.2f\n", output_data[0], output_data[1], output_data[2]);
-
     return 0;
 }
 
