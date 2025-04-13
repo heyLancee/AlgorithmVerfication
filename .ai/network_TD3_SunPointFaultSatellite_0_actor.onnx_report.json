@@ -1,7 +1,7 @@
 {
     "_allocate_inputs": 4,
     "_allocate_outputs": 4,
-    "cli_parameters": "generate --target stm32f4 --name network -m G:/code/AFTC/models/u_max_008/TD3_SunPointFaultSatellite_0_actor.onnx --compression none --verbosity 1 -O time --workspace C:/Users/lxy/AppData/Local/Temp/mxAI_workspace11271437685000017733633211586296534 --output C:/Users/lxy/.stm32cubemx/network_output",
+    "cli_parameters": "validate --target stm32f4 --name network -m G:/code/AFTC/models/u_max_008/TD3_SunPointFaultSatellite_0_actor.onnx --compression none --verbosity 1 -O time --workspace C:/Users/lxy/AppData/Local/Temp/mxAI_workspace11753045109620014467619297700701303 --output C:/Users/lxy/.stm32cubemx/network_output",
     "cli_version": {
         "extra": "20049",
         "major": 2,
@@ -11,10 +11,10 @@
     "cli_version_str": "2.0.0-20049",
     "code_size": 0,
     "compression": [],
-    "date_time": "2025-04-13T09:41:01+0800",
+    "date_time": "2025-04-13T11:01:06+0800",
     "error": 0,
     "error_str": [],
-    "exec_cmd": "generate",
+    "exec_cmd": "validate",
     "exec_duration": 0.0,
     "hash": "0xb75a71b81b62ce9dead68781446abd19",
     "inputs": [
@@ -385,7 +385,20 @@
     "strategy": "",
     "tools_api_version": "2.0.0-20049",
     "tools_version": "2.0.0-20049",
-    "val_error": -1.0,
-    "val_error_desc": "None (None) #-1",
-    "val_metrics": []
+    "val_error": 3.75147948261656e-07,
+    "val_error_desc": "x-cross (l2r) #1",
+    "val_metrics": [
+        {
+            "acc": "n.a.",
+            "cos": 1.0,
+            "desc": "X-cross #1",
+            "l2r": 3.75147948261656e-07,
+            "mae": 6.755193027174755e-08,
+            "mean": 6.755193027174755e-08,
+            "nse": 0.9999999999998017,
+            "rmse": 3.6999716712671216e-07,
+            "std": 3.699971102832933e-07,
+            "ts_name": "'output', 10 x f32(1x1x3), m_id=[8]"
+        }
+    ]
 }
