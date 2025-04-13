@@ -66,7 +66,16 @@ int AI_Run_Inference(TelemetryStruct *pTelemetry) {
     in_data[7] = pTelemetry->rx;
     in_data[8] = pTelemetry->ry;
     in_data[9] = pTelemetry->rz;
-
+    // printf("q0: %.2f\n", pTelemetry->q0);
+    // printf("q1: %.2f\n", pTelemetry->q1);
+    // printf("q2: %.2f\n", pTelemetry->q2);
+    // printf("q3: %.2f\n", pTelemetry->q3);
+    // printf("wx: %.2f\n", pTelemetry->wx);
+    // printf("wy: %.2f\n", pTelemetry->wy);
+    // printf("wz: %.2f\n", pTelemetry->wz);
+    // printf("r1: %.2f\n", pTelemetry->rx);
+    // printf("r2: %.2f\n", pTelemetry->ry);
+    // printf("r3: %.2f\n", pTelemetry->rz);
     // 运行推理
     ai_i32 batch = ai_network_run(m_network, &m_ai_input[0], &m_ai_output[0]);
     if (batch <= 0) {

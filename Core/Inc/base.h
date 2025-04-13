@@ -10,6 +10,7 @@
 #define QUEUE_MAX_SIZE 256          // 队列最大长度
 #define LEN_QUEUE_MAX_SIZE 2       // 队列最大长度
 #define MAX_RECV_BUFFER 256        // 接收缓冲区大小
+#define MAX_SEND_BUFFER 256         // 发送缓冲区大小
 
 // 定义枚举类型
 typedef enum {

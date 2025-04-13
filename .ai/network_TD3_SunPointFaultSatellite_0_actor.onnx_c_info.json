@@ -456,45 +456,46 @@
     }
   ],
   "environment": {
+    "device": "AMD64, Intel64 Family 6 Model 158 Stepping 10, GenuineIntel, Windows",
     "generated_model": {
-      "generated_time": "2025-04-13T09:41:01+0800",
+      "generated_time": "2025-04-13T11:01:06+0800",
       "model_files": [
         {
           "name": "network_data_params.h",
-          "signature": "0x16f6c9cb544e43d800a2e91913b7caa7"
+          "signature": "0x95433ac2013c7ba4588b0732b518ed0d"
         },
         {
           "name": "network_data_params.c",
-          "signature": "0xfebcebd4e615882e7bd9ad47593ae790"
+          "signature": "0x1ab17f92d083235856bd990839b90496"
         },
         {
           "name": "network_data.h",
-          "signature": "0xd43839305b31c855787f1b3978d3f3e2"
+          "signature": "0x998d2a4ba926d66c81becb619d2bde13"
         },
         {
           "name": "network_data.c",
-          "signature": "0xf8374766eee4edd6c7dd2419c8d51027"
+          "signature": "0x0ad3bf91bca369ebc577102f778faedf"
         },
         {
           "name": "network_config.h",
-          "signature": "0xd297bc8e4b9be9b74b9577ba0fda0ecc"
+          "signature": "0xefebceeb6215aa97a157056185ba6552"
         },
         {
           "name": "network.h",
-          "signature": "0xbecb4b06ebff2b7d6f4f1cf4ad2f9973"
+          "signature": "0x4b5d20f0d1854d9f030d084e681170bf"
         },
         {
           "name": "network.c",
-          "signature": "0x9a258489263c2544c81078f4ba604791"
+          "signature": "0xbeb942ed878ad9d29d55edab72e00b6a"
         }
       ],
       "name": "network"
     },
-    "network_signature": "0x1b1fdd6e069786a0",
+    "network_signature": "0x3319213bd3ecf45c",
     "test_name": "",
     "tools": [
       {
-        "arguments": "generate --target stm32f4 --name network -m G:/code/AFTC/models/u_max_008/TD3_SunPointFaultSatellite_0_actor.onnx --compression none --verbosity 1 -O time --workspace C:/Users/lxy/AppData/Local/Temp/mxAI_workspace11271437685000017733633211586296534 --output C:/Users/lxy/.stm32cubemx/network_output",
+        "arguments": "validate --target stm32f4 --name network -m G:/code/AFTC/models/u_max_008/TD3_SunPointFaultSatellite_0_actor.onnx --compression none --verbosity 1 -O time --workspace C:/Users/lxy/AppData/Local/Temp/mxAI_workspace11753045109620014467619297700701303 --output C:/Users/lxy/.stm32cubemx/network_output",
         "environment": [
           "STATS_TYPE=X-CUBE-AI"
         ],
@@ -603,6 +604,13 @@
           }
         }
       ],
+      "exec_time": {
+        "counters": null,
+        "cycles": 0,
+        "cycles_by_macc": 0.0,
+        "duration_ms": 0.16325000817596447,
+        "percentage": 100.0
+      },
       "id": 0,
       "inputs": [
         121
@@ -615,6 +623,13 @@
             "use_bias": "True"
           },
           "description": "Dense",
+          "exec_time": {
+            "counters": [],
+            "cycles": 0,
+            "cycles_by_macc": 0.0,
+            "duration_ms": 0.005625000281725079,
+            "percentage": 3.445635528337607
+          },
           "id": 9,
           "inputs": [
             121,
@@ -642,6 +657,13 @@
             "with_batch_size": "True"
           },
           "description": "Nonlinearity",
+          "exec_time": {
+            "counters": [],
+            "cycles": 0,
+            "cycles_by_macc": 0.0,
+            "duration_ms": 0.0018750001036096364,
+            "percentage": 1.1485451820551245
+          },
           "id": 10,
           "inputs": [
             123
@@ -667,6 +689,13 @@
             "use_bias": "True"
           },
           "description": "Dense",
+          "exec_time": {
+            "counters": [],
+            "cycles": 0,
+            "cycles_by_macc": 0.0,
+            "duration_ms": 0.1498750075697899,
+            "percentage": 91.80704444942025
+          },
           "id": 11,
           "inputs": [
             125,
@@ -694,6 +723,13 @@
             "with_batch_size": "True"
           },
           "description": "Nonlinearity",
+          "exec_time": {
+            "counters": [],
+            "cycles": 0,
+            "cycles_by_macc": 0.0,
+            "duration_ms": 0.0008750000415602699,
+            "percentage": 0.5359877474659125
+          },
           "id": 12,
           "inputs": [
             127
@@ -719,6 +755,13 @@
             "use_bias": "True"
           },
           "description": "Dense",
+          "exec_time": {
+            "counters": [],
+            "cycles": 0,
+            "cycles_by_macc": 0.0,
+            "duration_ms": 0.0016250000771833584,
+            "percentage": 0.9954058167224089
+          },
           "id": 13,
           "inputs": [
             129,
@@ -746,6 +789,13 @@
             "with_batch_size": "True"
           },
           "description": "Nonlinearity",
+          "exec_time": {
+            "counters": [],
+            "cycles": 0,
+            "cycles_by_macc": 0.0,
+            "duration_ms": 0.0025000000605359674,
+            "percentage": 1.5313935285327882
+          },
           "id": 14,
           "inputs": [
             131
@@ -771,6 +821,13 @@
             "use_bias": "True"
           },
           "description": "ScaleBias",
+          "exec_time": {
+            "counters": [],
+            "cycles": 0,
+            "cycles_by_macc": 0.0,
+            "duration_ms": 0.0008750000415602699,
+            "percentage": 0.5359877474659125
+          },
           "id": 15,
           "inputs": [
             133,
@@ -821,12 +878,12 @@
       0,
       0
     ],
-    "kernel_flash": 10746,
-    "kernel_ram": 2320,
-    "series": "stm32f4",
-    "toolchain": "arm-none-eabi-gcc (GNU Tools for STM32 12.3.rel1.20240926-1715) 12.3.1 20230626",
-    "toolchain_flash": 892,
-    "toolchain_ram": 12,
+    "kernel_flash": null,
+    "kernel_ram": null,
+    "series": "generic",
+    "toolchain": null,
+    "toolchain_flash": null,
+    "toolchain_ram": null,
     "weights": 502436
   },
   "memory_pools": [
@@ -860,7 +917,7 @@
       "virtual": false
     },
     {
-      "address": "s_network_weights_array_u64",
+      "address": "NULL",
       "alignment": 0,
       "attributes": {
         "latency": "UNDEF",
@@ -888,5 +945,22 @@
       "user_allocated": false,
       "virtual": false
     }
-  ]
+  ],
+  "validation": {
+    "val_error": 3.75147948261656e-07,
+    "val_error_desc": "x-cross (l2r) #1",
+    "val_metrics": [
+      {
+        "acc": "n.a.",
+        "cos": 1.0,
+        "desc": "X-cross #1",
+        "l2r": 3.75147948261656e-07,
+        "mae": 6.755193027174755e-08,
+        "mean": 6.755193027174755e-08,
+        "nse": 0.9999999999998017,
+        "rmse": 3.6999716712671216e-07,
+        "std": 3.699971102832933e-07
+      }
+    ]
+  }
 }
