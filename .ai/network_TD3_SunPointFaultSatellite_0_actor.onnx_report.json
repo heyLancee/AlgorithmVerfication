@@ -1,7 +1,7 @@
 {
     "_allocate_inputs": 4,
     "_allocate_outputs": 4,
-    "cli_parameters": "generate --target stm32f4 --name network -m G:/code/AFTC/models/u_max_008/TD3_SunPointFaultSatellite_0_actor.onnx --compression none --verbosity 1 -O time --workspace C:/Users/lxy/AppData/Local/Temp/mxAI_workspace4723349643630013007335883111052536 --output C:/Users/lxy/.stm32cubemx/network_output",
+    "cli_parameters": "generate --target stm32f4 --name network -m G:/code/AFTC/models/u_max_008/TD3_SunPointFaultSatellite_0_actor.onnx --compression none --verbosity 1 -O time --workspace C:/Users/lxy/AppData/Local/Temp/mxAI_workspace11271437685000017733633211586296534 --output C:/Users/lxy/.stm32cubemx/network_output",
     "cli_version": {
         "extra": "20049",
         "major": 2,
@@ -11,25 +11,27 @@
     "cli_version_str": "2.0.0-20049",
     "code_size": 0,
     "compression": [],
-    "date_time": "2025-04-12T15:29:28+0800",
+    "date_time": "2025-04-13T09:41:01+0800",
     "error": 0,
     "error_str": [],
     "exec_cmd": "generate",
     "exec_duration": 0.0,
-    "hash": "0x7bc577537a3a89b55759db98cb9ad84d",
+    "hash": "0xb75a71b81b62ce9dead68781446abd19",
     "inputs": [
         "input"
     ],
     "layers": [
         {
-            "c_id": [],
+            "c_id": [
+                0
+            ],
             "extras": {
                 "n_macc": 0,
                 "n_params": 4000,
                 "psize": 16000,
-                "rom_size": 0
+                "rom_size": 17600
             },
-            "id": 0,
+            "id": 1,
             "inputs": [],
             "name": "l1_weight",
             "original": "Gemm",
@@ -43,7 +45,7 @@
                 "psize": 1600,
                 "rom_size": 0
             },
-            "id": 0,
+            "id": 1,
             "inputs": [],
             "name": "l1_bias",
             "original": "Gemm",
@@ -51,15 +53,15 @@
         },
         {
             "c_id": [
-                1
+                2
             ],
             "extras": {
                 "n_macc": 0,
                 "n_params": 120000,
                 "psize": 480000,
-                "rom_size": 0
+                "rom_size": 481200
             },
-            "id": 2,
+            "id": 3,
             "inputs": [],
             "name": "l2_weight",
             "original": "Gemm",
@@ -73,7 +75,7 @@
                 "psize": 1200,
                 "rom_size": 0
             },
-            "id": 2,
+            "id": 3,
             "inputs": [],
             "name": "l2_bias",
             "original": "Gemm",
@@ -81,15 +83,15 @@
         },
         {
             "c_id": [
-                3
+                4
             ],
             "extras": {
                 "n_macc": 0,
                 "n_params": 900,
                 "psize": 3600,
-                "rom_size": 0
+                "rom_size": 3612
             },
-            "id": 4,
+            "id": 5,
             "inputs": [],
             "name": "l3_weight",
             "original": "Gemm",
@@ -103,23 +105,25 @@
                 "psize": 12,
                 "rom_size": 0
             },
-            "id": 4,
+            "id": 5,
             "inputs": [],
             "name": "l3_bias",
             "original": "Gemm",
             "type": "Placeholder"
         },
         {
-            "c_id": [],
+            "c_id": [
+                6
+            ],
             "extras": {
                 "n_macc": 0,
                 "n_params": 1,
                 "psize": 4,
-                "rom_size": 0
+                "rom_size": 24
             },
-            "id": 7,
+            "id": 8,
             "inputs": [],
-            "name": "node_13",
+            "name": "_Constant_output_0",
             "original": "Mul",
             "type": "Placeholder"
         },
@@ -148,9 +152,7 @@
             "type": "Input"
         },
         {
-            "c_id": [
-                0
-            ],
+            "c_id": [],
             "extras": {
                 "n_macc": 4400,
                 "n_params": 0,
@@ -165,7 +167,7 @@
                         1
                     ]
                 },
-                "rom_size": 17600
+                "rom_size": 0
             },
             "id": 1,
             "inputs": [
@@ -173,12 +175,14 @@
                 "l1_weight",
                 "l1_bias"
             ],
-            "name": "node_7",
+            "name": "_l1_Gemm_output_0",
             "original": "Gemm",
             "type": "Gemm"
         },
         {
-            "c_id": [],
+            "c_id": [
+                1
+            ],
             "extras": {
                 "n_macc": 400,
                 "n_params": 0,
@@ -197,16 +201,14 @@
             },
             "id": 2,
             "inputs": [
-                "node_7"
+                "_l1_Gemm_output_0"
             ],
-            "name": "node_8",
+            "name": "_Relu_output_0",
             "original": "Relu",
             "type": "Nonlinearity"
         },
         {
-            "c_id": [
-                2
-            ],
+            "c_id": [],
             "extras": {
                 "n_macc": 120300,
                 "n_params": 0,
@@ -221,20 +223,22 @@
                         1
                     ]
                 },
-                "rom_size": 481200
+                "rom_size": 0
             },
             "id": 3,
             "inputs": [
-                "node_8",
+                "_Relu_output_0",
                 "l2_weight",
                 "l2_bias"
             ],
-            "name": "node_9",
+            "name": "_l2_Gemm_output_0",
             "original": "Gemm",
             "type": "Gemm"
         },
         {
-            "c_id": [],
+            "c_id": [
+                3
+            ],
             "extras": {
                 "n_macc": 300,
                 "n_params": 0,
@@ -253,16 +257,14 @@
             },
             "id": 4,
             "inputs": [
-                "node_9"
+                "_l2_Gemm_output_0"
             ],
-            "name": "node_10",
+            "name": "_Relu_1_output_0",
             "original": "Relu",
             "type": "Nonlinearity"
         },
         {
-            "c_id": [
-                4
-            ],
+            "c_id": [],
             "extras": {
                 "n_macc": 903,
                 "n_params": 0,
@@ -277,15 +279,15 @@
                         1
                     ]
                 },
-                "rom_size": 3612
+                "rom_size": 0
             },
             "id": 5,
             "inputs": [
-                "node_10",
+                "_Relu_1_output_0",
                 "l3_weight",
                 "l3_bias"
             ],
-            "name": "node_11",
+            "name": "_l3_Gemm_output_0",
             "original": "Gemm",
             "type": "Gemm"
         },
@@ -311,16 +313,14 @@
             },
             "id": 6,
             "inputs": [
-                "node_11"
+                "_l3_Gemm_output_0"
             ],
-            "name": "node_12",
+            "name": "_Tanh_output_0",
             "original": "Tanh",
             "type": "Nonlinearity"
         },
         {
-            "c_id": [
-                6
-            ],
+            "c_id": [],
             "extras": {
                 "n_macc": 3,
                 "n_params": 0,
@@ -335,12 +335,12 @@
                         1
                     ]
                 },
-                "rom_size": 24
+                "rom_size": 0
             },
             "id": 8,
             "inputs": [
-                "node_12",
-                "node_13"
+                "_Tanh_output_0",
+                "_Constant_output_0"
             ],
             "name": "output",
             "original": "Mul",
