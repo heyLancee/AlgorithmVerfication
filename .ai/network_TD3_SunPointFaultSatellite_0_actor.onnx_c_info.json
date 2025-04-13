@@ -6,35 +6,6 @@
       "channel_first": false,
       "channel_last": true,
       "epochs": {
-        "end": 4,
-        "start": 2
-      },
-      "flags": "STAI_FLAG_INPUTS|STAI_FLAG_PREALLOCATED|STAI_FLAG_ACTIVATIONS",
-      "format": "STAI_FORMAT_FLOAT",
-      "id": 121,
-      "intq": {},
-      "is_param": false,
-      "mpool_id": 0,
-      "name": "input_output_array",
-      "nbits": 32,
-      "offset_start": 1160,
-      "qmn": {},
-      "shape": [
-        1,
-        10
-      ],
-      "shape_map": [
-        "H",
-        "CH"
-      ],
-      "size_bytes": 40
-    },
-    {
-      "alignment": 4,
-      "batch": 0,
-      "channel_first": false,
-      "channel_last": true,
-      "epochs": {
         "end": 12,
         "start": 9
       },
@@ -44,7 +15,7 @@
       "intq": {},
       "is_param": false,
       "mpool_id": 0,
-      "name": "node_10_output_array",
+      "name": "_Relu_1_output_0_output_array",
       "nbits": 32,
       "offset_start": 1200,
       "qmn": {},
@@ -61,87 +32,31 @@
     {
       "alignment": 4,
       "batch": 0,
-      "channel_first": true,
-      "channel_last": true,
-      "epochs": {
-        "end": 1,
-        "start": 0
-      },
-      "flags": "STAI_FLAG_WEIGHTS|STAI_FLAG_CONST|STAI_FLAG_PREALLOCATED",
-      "format": "STAI_FORMAT_FLOAT",
-      "id": 153,
-      "intq": {},
-      "is_param": true,
-      "mpool_id": 1,
-      "name": "node_11_bias_array",
-      "nbits": 32,
-      "offset_start": 502400,
-      "qmn": {},
-      "shape": [
-        3
-      ],
-      "shape_map": [
-        "CH"
-      ],
-      "size_bytes": 12
-    },
-    {
-      "alignment": 4,
-      "batch": 0,
       "channel_first": false,
       "channel_last": true,
       "epochs": {
-        "end": 14,
-        "start": 11
+        "end": 8,
+        "start": 5
       },
       "flags": "STAI_FLAG_PREALLOCATED|STAI_FLAG_ACTIVATIONS",
       "format": "STAI_FORMAT_FLOAT",
-      "id": 131,
+      "id": 125,
       "intq": {},
       "is_param": false,
       "mpool_id": 0,
-      "name": "node_11_output_array",
+      "name": "_Relu_output_0_output_array",
       "nbits": 32,
-      "offset_start": 0,
+      "offset_start": 1200,
       "qmn": {},
       "shape": [
         1,
-        3
+        400
       ],
       "shape_map": [
         "H",
         "CH"
       ],
-      "size_bytes": 12
-    },
-    {
-      "alignment": 4,
-      "batch": 0,
-      "channel_first": true,
-      "channel_last": true,
-      "epochs": {
-        "end": 1,
-        "start": 0
-      },
-      "flags": "STAI_FLAG_WEIGHTS|STAI_FLAG_CONST|STAI_FLAG_PREALLOCATED",
-      "format": "STAI_FORMAT_FLOAT",
-      "id": 150,
-      "intq": {},
-      "is_param": true,
-      "mpool_id": 1,
-      "name": "node_11_weights_array",
-      "nbits": 32,
-      "offset_start": 498800,
-      "qmn": {},
-      "shape": [
-        3,
-        300
-      ],
-      "shape_map": [
-        "CH",
-        "CH_IN"
-      ],
-      "size_bytes": 3600
+      "size_bytes": 1600
     },
     {
       "alignment": 4,
@@ -158,7 +73,7 @@
       "intq": {},
       "is_param": false,
       "mpool_id": 0,
-      "name": "node_12_output_array",
+      "name": "_Tanh_output_0_output_array",
       "nbits": 32,
       "offset_start": 12,
       "qmn": {},
@@ -187,7 +102,7 @@
       "intq": {},
       "is_param": true,
       "mpool_id": 1,
-      "name": "node_7_bias_array",
+      "name": "_l1_Gemm_output_0_bias_array",
       "nbits": 32,
       "offset_start": 16000,
       "qmn": {},
@@ -214,7 +129,7 @@
       "intq": {},
       "is_param": false,
       "mpool_id": 0,
-      "name": "node_7_output_array",
+      "name": "_l1_Gemm_output_0_output_array",
       "nbits": 32,
       "offset_start": 1200,
       "qmn": {},
@@ -243,7 +158,7 @@
       "intq": {},
       "is_param": true,
       "mpool_id": 1,
-      "name": "node_7_weights_array",
+      "name": "_l1_Gemm_output_0_weights_array",
       "nbits": 32,
       "offset_start": 0,
       "qmn": {},
@@ -260,35 +175,6 @@
     {
       "alignment": 4,
       "batch": 0,
-      "channel_first": false,
-      "channel_last": true,
-      "epochs": {
-        "end": 8,
-        "start": 5
-      },
-      "flags": "STAI_FLAG_PREALLOCATED|STAI_FLAG_ACTIVATIONS",
-      "format": "STAI_FORMAT_FLOAT",
-      "id": 125,
-      "intq": {},
-      "is_param": false,
-      "mpool_id": 0,
-      "name": "node_8_output_array",
-      "nbits": 32,
-      "offset_start": 1200,
-      "qmn": {},
-      "shape": [
-        1,
-        400
-      ],
-      "shape_map": [
-        "H",
-        "CH"
-      ],
-      "size_bytes": 1600
-    },
-    {
-      "alignment": 4,
-      "batch": 0,
       "channel_first": true,
       "channel_last": true,
       "epochs": {
@@ -301,7 +187,7 @@
       "intq": {},
       "is_param": true,
       "mpool_id": 1,
-      "name": "node_9_bias_array",
+      "name": "_l2_Gemm_output_0_bias_array",
       "nbits": 32,
       "offset_start": 497600,
       "qmn": {},
@@ -328,7 +214,7 @@
       "intq": {},
       "is_param": false,
       "mpool_id": 0,
-      "name": "node_9_output_array",
+      "name": "_l2_Gemm_output_0_output_array",
       "nbits": 32,
       "offset_start": 0,
       "qmn": {},
@@ -357,7 +243,7 @@
       "intq": {},
       "is_param": true,
       "mpool_id": 1,
-      "name": "node_9_weights_array",
+      "name": "_l2_Gemm_output_0_weights_array",
       "nbits": 32,
       "offset_start": 17600,
       "qmn": {},
@@ -370,6 +256,120 @@
         "CH_IN"
       ],
       "size_bytes": 480000
+    },
+    {
+      "alignment": 4,
+      "batch": 0,
+      "channel_first": true,
+      "channel_last": true,
+      "epochs": {
+        "end": 1,
+        "start": 0
+      },
+      "flags": "STAI_FLAG_WEIGHTS|STAI_FLAG_CONST|STAI_FLAG_PREALLOCATED",
+      "format": "STAI_FORMAT_FLOAT",
+      "id": 153,
+      "intq": {},
+      "is_param": true,
+      "mpool_id": 1,
+      "name": "_l3_Gemm_output_0_bias_array",
+      "nbits": 32,
+      "offset_start": 502400,
+      "qmn": {},
+      "shape": [
+        3
+      ],
+      "shape_map": [
+        "CH"
+      ],
+      "size_bytes": 12
+    },
+    {
+      "alignment": 4,
+      "batch": 0,
+      "channel_first": false,
+      "channel_last": true,
+      "epochs": {
+        "end": 14,
+        "start": 11
+      },
+      "flags": "STAI_FLAG_PREALLOCATED|STAI_FLAG_ACTIVATIONS",
+      "format": "STAI_FORMAT_FLOAT",
+      "id": 131,
+      "intq": {},
+      "is_param": false,
+      "mpool_id": 0,
+      "name": "_l3_Gemm_output_0_output_array",
+      "nbits": 32,
+      "offset_start": 0,
+      "qmn": {},
+      "shape": [
+        1,
+        3
+      ],
+      "shape_map": [
+        "H",
+        "CH"
+      ],
+      "size_bytes": 12
+    },
+    {
+      "alignment": 4,
+      "batch": 0,
+      "channel_first": true,
+      "channel_last": true,
+      "epochs": {
+        "end": 1,
+        "start": 0
+      },
+      "flags": "STAI_FLAG_WEIGHTS|STAI_FLAG_CONST|STAI_FLAG_PREALLOCATED",
+      "format": "STAI_FORMAT_FLOAT",
+      "id": 150,
+      "intq": {},
+      "is_param": true,
+      "mpool_id": 1,
+      "name": "_l3_Gemm_output_0_weights_array",
+      "nbits": 32,
+      "offset_start": 498800,
+      "qmn": {},
+      "shape": [
+        3,
+        300
+      ],
+      "shape_map": [
+        "CH",
+        "CH_IN"
+      ],
+      "size_bytes": 3600
+    },
+    {
+      "alignment": 4,
+      "batch": 0,
+      "channel_first": false,
+      "channel_last": true,
+      "epochs": {
+        "end": 4,
+        "start": 2
+      },
+      "flags": "STAI_FLAG_INPUTS|STAI_FLAG_PREALLOCATED|STAI_FLAG_ACTIVATIONS",
+      "format": "STAI_FORMAT_FLOAT",
+      "id": 121,
+      "intq": {},
+      "is_param": false,
+      "mpool_id": 0,
+      "name": "input_output_array",
+      "nbits": 32,
+      "offset_start": 1160,
+      "qmn": {},
+      "shape": [
+        1,
+        10
+      ],
+      "shape_map": [
+        "H",
+        "CH"
+      ],
+      "size_bytes": 40
     },
     {
       "alignment": 4,
@@ -457,44 +457,44 @@
   ],
   "environment": {
     "generated_model": {
-      "generated_time": "2025-04-12T15:29:28+0800",
+      "generated_time": "2025-04-13T09:41:01+0800",
       "model_files": [
         {
           "name": "network_data_params.h",
-          "signature": "0x72ebb2100e4b9d0c86b9de2aef4805f2"
+          "signature": "0x16f6c9cb544e43d800a2e91913b7caa7"
         },
         {
           "name": "network_data_params.c",
-          "signature": "0x2ae2e6ae1142a6cfade338d7f6f8bd58"
+          "signature": "0xfebcebd4e615882e7bd9ad47593ae790"
         },
         {
           "name": "network_data.h",
-          "signature": "0x5a0f82779b1af7b3d6ae6f748594fd70"
+          "signature": "0xd43839305b31c855787f1b3978d3f3e2"
         },
         {
           "name": "network_data.c",
-          "signature": "0xca59699e084afbe6f58b29f919efb922"
+          "signature": "0xf8374766eee4edd6c7dd2419c8d51027"
         },
         {
           "name": "network_config.h",
-          "signature": "0xb5f326eb069b1d78b210f6a89e998252"
+          "signature": "0xd297bc8e4b9be9b74b9577ba0fda0ecc"
         },
         {
           "name": "network.h",
-          "signature": "0xa46b1993987df4fecff93db5f1de578b"
+          "signature": "0xbecb4b06ebff2b7d6f4f1cf4ad2f9973"
         },
         {
           "name": "network.c",
-          "signature": "0x4069e0869f1aa9da87ca857e003815e2"
+          "signature": "0x9a258489263c2544c81078f4ba604791"
         }
       ],
       "name": "network"
     },
-    "network_signature": "0x687b543492fb6b2a",
+    "network_signature": "0x1b1fdd6e069786a0",
     "test_name": "",
     "tools": [
       {
-        "arguments": "generate --target stm32f4 --name network -m G:/code/AFTC/models/u_max_008/TD3_SunPointFaultSatellite_0_actor.onnx --compression none --verbosity 1 -O time --workspace C:/Users/lxy/AppData/Local/Temp/mxAI_workspace4723349643630013007335883111052536 --output C:/Users/lxy/.stm32cubemx/network_output",
+        "arguments": "generate --target stm32f4 --name network -m G:/code/AFTC/models/u_max_008/TD3_SunPointFaultSatellite_0_actor.onnx --compression none --verbosity 1 -O time --workspace C:/Users/lxy/AppData/Local/Temp/mxAI_workspace11271437685000017733633211586296534 --output C:/Users/lxy/.stm32cubemx/network_output",
         "environment": [
           "STATS_TYPE=X-CUBE-AI"
         ],
@@ -502,7 +502,7 @@
           "model_files": [
             {
               "name": "TD3_SunPointFaultSatellite_0_actor.onnx",
-              "signature": "0x7bc577537a3a89b55759db98cb9ad84d"
+              "signature": "0xb75a71b81b62ce9dead68781446abd19"
             }
           ],
           "n_params": 125604,
@@ -623,7 +623,7 @@
           ],
           "macc": 4400,
           "mapping": "NODE_SW",
-          "name": "node_7",
+          "name": "_l1_Gemm_output_0",
           "original_nodes": [
             "1"
           ],
@@ -648,7 +648,7 @@
           ],
           "macc": 400,
           "mapping": "NODE_SW",
-          "name": "node_8",
+          "name": "_Relu_output_0",
           "original_nodes": [
             "2"
           ],
@@ -675,7 +675,7 @@
           ],
           "macc": 120300,
           "mapping": "NODE_SW",
-          "name": "node_9",
+          "name": "_l2_Gemm_output_0",
           "original_nodes": [
             "3"
           ],
@@ -700,7 +700,7 @@
           ],
           "macc": 300,
           "mapping": "NODE_SW",
-          "name": "node_10",
+          "name": "_Relu_1_output_0",
           "original_nodes": [
             "4"
           ],
@@ -727,7 +727,7 @@
           ],
           "macc": 903,
           "mapping": "NODE_SW",
-          "name": "node_11",
+          "name": "_l3_Gemm_output_0",
           "original_nodes": [
             "5"
           ],
@@ -752,7 +752,7 @@
           ],
           "macc": 30,
           "mapping": "NODE_SW",
-          "name": "node_12",
+          "name": "_Tanh_output_0",
           "original_nodes": [
             "6"
           ],

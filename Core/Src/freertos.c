@@ -51,7 +51,7 @@
 QueueHandle_t dataQueue = NULL;
 QueueHandle_t dataLenQueue = NULL;
 
-static unsigned char recvBuffer[MAX_RECV_BUFFER] = {0};  // 接收缓冲�??????
+static unsigned char recvBuffer[MAX_RECV_BUFFER] = {0};  // 接收缓冲�???????
 uint8_t sendBuffer[MAX_RECV_BUFFER] = {0};  // 发�?�缓冲区
 // 事件组可以代替信号量的工作，完成任务与任务，中断与任务的通信
 EventGroupHandle_t EventGroup;
@@ -208,7 +208,7 @@ void StartDataRecv(void const * argument)
       continue;
     }
 
-    // 接受dataLen长度的数�?????
+    // 接受dataLen长度的数�??????
     for (int i = 0; i < dataLen; i++) {
       if (pdTRUE!= xQueueReceive(dataQueue, &recvBuffer[i], portMAX_DELAY)) {
         printf("Queue receive failed\r\n");
@@ -312,7 +312,7 @@ void StartDataProcess(void const * argument)
         return;
       }
 
-      // 2. 直接读取输出数据（假设输出是 float[3]�??
+      // 2. 直接读取输出数据（假设输出是 float[3]�???
       float* output_data = (float*)m_ai_output[0].data;
       pTelemetry->tx = output_data[0];
       pTelemetry->ty = output_data[1];
